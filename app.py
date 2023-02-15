@@ -1,14 +1,16 @@
 # app.py
 import os
 from flask import Flask, Response, request, abort, redirect
-import requests
+# import requests
 
 import json
 import sys
 from controller import(user)
+from controller import(people)
 from model.db import mongo
 
 from model import userModel
+from model import peopleModel
 
 
 
@@ -18,6 +20,7 @@ mongo.init_app(app) # initialize here!
 print(type(mongo))
 print((mongo.db.name))
 app.register_blueprint(user.userProfile)
+app.register_blueprint(people.peopleProfile)
 
 
 
