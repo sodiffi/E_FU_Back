@@ -74,24 +74,24 @@ def edit():
     t = checkParm(cond, content)
 
     if(isinstance(t, dict)):
-        oldPasswordFromDB = userModel.findPasswordByAccount(
-            content["account"], t["oldPassword"])
+        oldPasswordFromDB = userModel.login(
+            content["account"], content["oldPassword"])
         print(oldPasswordFromDB)
-        if(oldPasswordFromDB["success"]):
-            oldPasswordFromDB = oldPasswordFromDB["data"]
-            if(len(oldPasswordFromDB) > 0):
-                if(content["password"] != content["passwordConfire"]):
-                    result["mes"] += "密碼和確認密碼不同\n"
-                if(result["mes"] == ""):
-                    data = userModel.changePassword(
-                        content["account"], content["password"])
-                    result["mes"] = "更換密碼成功"
-                    result["success"] = True
-                    result["data"] = data
-            elif(len(oldPasswordFromDB) == 0):
-                result["mes"] = "輸入舊密碼錯誤"
-            else:
-                result["mes"] = "帳號異常"
+        print("ok")
+        if(len(oldPasswordFromDB) > 0):
+            if(content["password"] != content["passwordConfire"]):
+                result["mes"] += "密碼和確認密碼不同\n"
+            if(result["mes"] == ""):
+                data = userModel.changePassword(
+                    content["account"], content["password"])
+                print(data)
+                result["mes"] = "更換密碼成功"
+                result["success"] = True
+                # result["data"] = data
+        elif(len(oldPasswordFromDB) == 0):
+            result["mes"] = "輸入舊密碼錯誤"
+        else:
+            result["mes"] = "帳號異常"
     return ret(result)
 
 
