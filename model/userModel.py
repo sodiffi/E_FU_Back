@@ -4,17 +4,20 @@ from model.db import mongo
 
 
 def login(account, password):
+    print(account,password)
     return list(mongo.db.user.find({"account":account,"password":password},{"_id":0}))
 
 
-# def findPasswordByAccount(account, psw):
-#     sqlstr = f"select * from user where id=\"{account}\" and password=md5(\"{psw}\")"
-#     return DB.execution(DB.select, sqlstr)
+#def findPasswordByAccount(account, password):
+    # sqlstr = f"select * from user where id=\"{account}\" and password=md5(\"{psw}\")"
+    # return DB.execution(DB.select, sqlstr)
+    #print(account,password)
+    #return list(mongo.db.user.find({"account":account,"password":password},{"_id":0}))
 
 
-# def changePassword(account, password):
-#     sqlstr = f"update user set password = md5(\"{password}\") where id = \"{account}\""
-#     return DB.execution(DB.update, sqlstr)
+def changePassword(account, password):
+
+    return mongo.db.user.update_one({"account":account},{"$set": { "password": password }})
 
 
 # def sign(account, password, age, gender, area, name, degree,phone):

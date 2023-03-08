@@ -6,12 +6,10 @@ from itsdangerous import TimedJSONWebSignatureSerializer as TJSS
 
 import json
 import sys
-from controller import(user,record)
+from controller import(user,record,people)
 from model.db import mongo
 from controller.util import checkParm, ret
-
-from model import userModel
-
+from model import userModel,peopleModel
 
 
 app = Flask(__name__)
@@ -21,6 +19,8 @@ mongo.init_app(app) # initialize here!
 print(type(mongo))
 print((mongo.db.name))
 app.register_blueprint(user.userProfile)
+app.register_blueprint(people.peopleProfile)
+
 app.register_blueprint(record.recordAPI)
 
 
