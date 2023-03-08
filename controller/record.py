@@ -1,6 +1,5 @@
 from flask import Blueprint, request
 from model import recordModel
-
 from .util import checkParm, ret
 
 recordAPI = Blueprint("record", __name__, url_prefix="/record")
