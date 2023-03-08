@@ -1,15 +1,10 @@
 # app.py
-import os
-from flask import Flask, Response, request, abort, redirect,jsonify
-import requests
+from flask import Flask
 from itsdangerous import TimedJSONWebSignatureSerializer as TJSS
 
-import json
-import sys
 from controller import(user,record,people)
 from model.db import mongo
 from controller.util import checkParm, ret
-from model import userModel,peopleModel
 
 
 app = Flask(__name__)
