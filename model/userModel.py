@@ -20,12 +20,10 @@ def changePassword(account, password):
     return mongo.db.user.update_one({"account":account},{"$set": { "password": password }})
 
 
-# def sign(account, password, age, gender, area, name, degree,phone):
-#     sqlstr = f"insert into user(id, password,birthday,gender,area_id,name,degree,phone) VALUES (\"{account}\", md5(\"{password}\") ,\"{age}\" ,\"{gender}\",\"{area}\",\"{name}\",\"{degree}\",\"{phone}\")"
-#     return DB.execution(DB.create, sqlstr)
+def sign(target):
+    return mongo.db.user.insert_one(target)
 
 
-# def hasUser(userid):
-#     sqlstr = f"select count(*) as c from user where id=\"{userid}\""
-#     return DB.execution(DB.select, sqlstr)
+def hasUser(account):
+    return list(mongo.db.user.find({"account":account}))
 
