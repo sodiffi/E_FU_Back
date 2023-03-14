@@ -41,7 +41,8 @@ def add():
     # birth = datetime.strptime(content["birth"],'%Y-%m-%d').date()
     height = content["height"]
     weight = content["weight"]
-    data = peopleModel.addpeople(uid,name, gender, birth, height, weight)
+    disease_id = content["disease_id"]
+    data = peopleModel.addpeople(uid,name, gender, birth, height, weight,disease_id)
     print((data))
     result = {"success": False, "data": data}
     return ret(result)
@@ -66,4 +67,24 @@ def edit():
     data = peopleModel.finduid(uid)
     print((data))
     result = {"success": False, "data": data}
+    return ret(result)
+
+
+@peopleProfile.route("/edit/id", methods=["POST"])
+def editpeople():
+    content = request.json
+    print(content)
+    result = {"success": False, "mes": ""}
+    uid = content["uuid"]
+    name = content["name"]
+    gender = content["gender"]
+    birth = content["birth"]
+    height = content["height"]
+    weight = content["weight"]
+    disease_id = content["disease_id"]
+    if(result["mes"] == ""):
+        data = peopleModel.editpeople(uid,name, gender, birth, height, weight,disease_id)
+        print((data))
+        result["mes"] = "編輯成功"
+        result["success"] = True
     return ret(result)
