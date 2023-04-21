@@ -11,7 +11,7 @@ from .util import checkParm, ret
 
 peopleProfile = Blueprint("people", __name__, url_prefix="/people")
 
-@peopleProfile.route("/show", methods=["GET"])
+@peopleProfile.route("/", methods=["GET"])
 def get():
     data = peopleModel.getpeople()
     print((data))
@@ -28,7 +28,7 @@ def get():
 #     result = {"success": False, "data": data}
 #     peopleModel.addpeople(data)
 
-@peopleProfile.route("/add", methods=["POST"])
+@peopleProfile.route("/", methods=["POST"])
 def add():
     content = request.json
     print(content)

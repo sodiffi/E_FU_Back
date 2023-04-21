@@ -1,8 +1,8 @@
 # app.py
-from flask import Flask,request
+from flask import Flask,request,make_response,jsonify
 from itsdangerous import TimedJSONWebSignatureSerializer as TJSS
-
-from controller import(user,record,people)
+import json
+from controller import(user,record,people,e)
 from model.db import mongo
 from controller.util import checkParm, ret
 from model import (userModel)
@@ -17,6 +17,7 @@ print((mongo.db.name))
 app.register_blueprint(user.userAPI)
 app.register_blueprint(people.peopleProfile)
 app.register_blueprint(record.recordAPI)
+app.register_blueprint(e.eAPI)
 
 
 @app.route('/', methods=["POST"])
@@ -31,26 +32,21 @@ def home():
 @app.route("/login", methods=["POST"])
 def login():
     content = request.json
-    account = content['account']
+    id = content['id']
     password = content["password"]
-    data = userModel.login(account, password)
+    data = userModel.login(id, password)
     print((data))
+    print("app")
     result = {"success": False, "data": data}
     if len(data) == 1:
         s = TJSS(app.config['SECRET_KEY'], expires_in=3600)
-        token = s.dumps({'username': account}).decode('utf-8')
+        token = s.dumps({'username': id}).decode('utf-8')
         result["mes"] = "登入成功"
         
         result["success"] = True
-        response = jsonify({
-            'access_token': token,
-            'token_type': 'Bearer',
-            'expires_in': 3600
-        })
-        response.headers['Cache-Control'] = 'no-store'
-        response.headers['Pragma'] = 'no-cache'
-
-        return response
+        result['data']={"user":result['data'],"token":token}
+        
+        return ret(result)
     elif len(data) == 0:
         result["mes"] = "登入失敗"
     else:
