@@ -1,6 +1,8 @@
 from flask import Response, jsonify, make_response
 import json
+from itsdangerous import TimedJSONWebSignatureSerializer as TJSS,BadSignature,SignatureExpired
 from coder import MyEncoder
+import app
 
 
 def checkParm(cond, content, option=None):
@@ -19,7 +21,27 @@ def ret(result):
     # print(result)
     mes= " " if "mes"  not in result.keys() else result["mes"]
     resultData = result["data"] if "data" in result else {}
-    return make_response(json.dumps({"D": resultData, "message": mes, "success": result["success"], }, cls=MyEncoder))
+    response=make_response(json.dumps({"D": resultData, "message": mes, "success": result["success"], }, cls=MyEncoder))
+    response.headers["Content-Type"] = "text/json; charset=utf-8"
+    return response
+
+def identity(token):
+    s = TJSS(app.config['SECRET_KEY'], expires_in=3600)
+    data=""
+    try:
+        data = s.loads(token)  # 驗證
+    except SignatureExpired:
+        #  當時間超過的時候就會引發SignatureExpired錯誤
+        print('SignatureExpired, over time')
+    except BadSignature:
+        #  當驗證錯誤的時候就會引發BadSignature錯誤
+        print('BadSignature, No match')
+    finally:
+        print('finish')
+    return data
+
+    
+
 
 # 好像不能用
 

@@ -3,9 +3,11 @@ from model.util import group
 from model.db import mongo
 
 
-def login(account, password):
-    print(account,password)
-    return list(mongo.db.user.find({"account":account,"password":password},{"_id":0}))
+def login(id, password):
+    print(id,password)
+    return list(mongo.db.user.find({"id":f"{id}","password":f"{password}"},
+                                   {"_id":0}
+                                   ))
 
 
 #def findPasswordByAccount(account, password):
