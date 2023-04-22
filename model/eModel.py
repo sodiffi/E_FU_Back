@@ -10,7 +10,8 @@ def getEpeople(e_id):
     for i in p_list:
         f_ids.append(i["f_id"])
     print(f_ids)
-    return list(
+    try:
+        return list(
         mongo.db.user.aggregate(
             [
                 {
@@ -35,28 +36,36 @@ def getEpeople(e_id):
             ]
         )
     )
-
+    except:
+        return "error"
 
 def getAppoint(e_id):
-    return list(
-        mongo.db.appointment.aggregate(
-            [
-                {"$match": {"e_id": e_id}},
-                {
-                    "$group": {
-                        "_id": {"start_date": "$start_date", "time": "$time"},
-                        "count": {"$count": {}},
-                    }
-                },
-                {"$set": {"id": "$_id"}},{"$unset":"_id"}
-                
-            ]
-        )
-    )
+    try:
+        return list(
+            mongo.db.appointment.aggregate(
+                [
+                    {"$match": {"e_id": e_id}},
+                    {
+                        "$group": {
+                            "_id": {"start_date": "$start_date", "time": "$time"},
+                            "count": {"$count": {}},
+                        }
+                    },
+                    {"$set": {"id": "$_id"}},{"$unset":"_id"}
+                    
+                ]
+            )
+        )   
+    except:
+        return "error"
+    
+
+    
 
 
 def getAppointDetail(e_id, start_date, time):
-    return list(
+   try:
+        return list(
         mongo.db.appointment.aggregate(
             [
                 {
@@ -80,3 +89,4 @@ def getAppointDetail(e_id, start_date, time):
             ]
         )
     )
+   except:return "error"
