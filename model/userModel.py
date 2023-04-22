@@ -4,22 +4,25 @@ from model.db import mongo
 
 
 def login(id, password):
-    print(id,password)
-    return list(mongo.db.user.find({"id":f"{id}","password":f"{password}"},
-                                   {"_id":0}
-                                   ))
+    try:
+        return list(
+            mongo.db.user.find({"id": f"{id}", "password": f"{password}"}, {"_id": 0})
+        )
+    except:
+        return "error"
 
 
-#def findPasswordByAccount(account, password):
-    # sqlstr = f"select * from user where id=\"{account}\" and password=md5(\"{psw}\")"
-    # return DB.execution(DB.select, sqlstr)
-    #print(account,password)
-    #return list(mongo.db.user.find({"account":account,"password":password},{"_id":0}))
+# def findPasswordByAccount(account, password):
+# sqlstr = f"select * from user where id=\"{account}\" and password=md5(\"{psw}\")"
+# return DB.execution(DB.select, sqlstr)
+# print(account,password)
+# return list(mongo.db.user.find({"account":account,"password":password},{"_id":0}))
 
 
 def changePassword(account, password):
-
-    return mongo.db.user.update_one({"account":account},{"$set": { "password": password }})
+    return mongo.db.user.update_one(
+        {"account": account}, {"$set": {"password": password}}
+    )
 
 
 def sign(target):
@@ -27,5 +30,7 @@ def sign(target):
 
 
 def hasUser(account):
-    return list(mongo.db.user.find({"account":account}))
-
+    try:
+        return list(mongo.db.user.find({"account": account}))
+    except:
+        return "error"

@@ -24,6 +24,20 @@ def ret(result):
     response=make_response(json.dumps({"D": resultData, "message": mes, "success": result["success"], }, cls=MyEncoder))
     response.headers["Content-Type"] = "text/json; charset=utf-8"
     return response
+def quickRet(result):
+    mes = " " if "mes" not in result.keys() else result["mes"]
+    response = make_response(
+        json.dumps(
+            {
+                "D": result,
+                "message": mes,
+                "success": type(result) == list,
+            },
+            cls=MyEncoder,
+        )
+    )
+    response.headers["Content-Type"] = "text/json; charset=utf-8"
+    return response
 
 def identity(token):
     s = TJSS(app.config['SECRET_KEY'], expires_in=3600)
