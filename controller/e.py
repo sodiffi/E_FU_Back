@@ -19,3 +19,21 @@ def get(e_id):
     result = {"success": True, "data": data}
     return ret(result)
 
+@eAPI.route("/a/<e_id>",methods=["GET"])
+def getAppoint(e_id):
+    result = {"success": True, "data": eModel.getAppoint(e_id)}
+    return ret(result)
+
+@eAPI.route('a/d',methods=["GET"])
+def getAppointDetail():
+    cond=["start_date","time","e_id"]
+    check=checkParm(cond,request.args)
+    result = {"success": False, }
+    if(type(check)==dict):
+        result["success"]=True
+        result['data']=eModel.getAppointDetail(check["e_id"],check["start_date"],check["time"])
+    else:
+        result['mes']=check
+
+    return ret(result)
+

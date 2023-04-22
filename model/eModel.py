@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 from model.util import group
 from model.db import mongo
@@ -31,6 +32,51 @@ def getEpeople(e_id):
                     }
                 },
                 {"$unset": ["_id", "result"]},
+            ]
+        )
+    )
+
+
+def getAppoint(e_id):
+    return list(
+        mongo.db.appointment.aggregate(
+            [
+                {"$match": {"e_id": e_id}},
+                {
+                    "$group": {
+                        "_id": {"start_date": "$start_date", "time": "$time"},
+                        "count": {"$count": {}},
+                    }
+                },
+                {"$set": {"id": "$_id"}},{"$unset":"_id"}
+                
+            ]
+        )
+    )
+
+
+def getAppointDetail(e_id, start_date, time):
+    return list(
+        mongo.db.appointment.aggregate(
+            [
+                {
+                    "$match": {
+                        "e_id": e_id,
+                        "time": time,
+                        "start_date": {"$eq": datetime.fromisoformat(start_date)},
+                    }
+                },
+                {
+                    "$lookup": {
+                        "from": "user",
+                        "localField": "f_id",
+                        "foreignField": "id",
+                        "as": "result",
+                    },
+                },
+                {"$unwind": {"path": "$result"}},
+                {"$addFields": {"name": "$result.name"}},
+                {"$unset": ["result", "_id","e_id","start_date","time"]},
             ]
         )
     )
