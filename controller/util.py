@@ -25,7 +25,9 @@ def ret(result):
     response.headers["Content-Type"] = "text/json; charset=utf-8"
     return response
 def quickRet(result):
-    mes = " " if "mes" not in result.keys() else result["mes"]
+    print(result)
+    print(type(result))
+    mes= result if result=="error" else " "
     response = make_response(
         json.dumps(
             {

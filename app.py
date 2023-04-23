@@ -78,4 +78,4 @@ def sign():
     else:
         result["mes"] = "請填畢所有資料"
     return ret(result)
-    return ret(result)
+    
