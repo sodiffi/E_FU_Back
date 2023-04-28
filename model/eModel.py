@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime,timedelta
 import json
 from model.util import group
 from model.db import mongo
@@ -45,8 +45,9 @@ def getEpeople(e_id):
         return "error"
 
 def getAppoint(e_id):
+    table=["MON","THE","WED","THU","FRI","SAT","SUN"]
     try:
-        return list(
+        data=list(
             mongo.db.appointment.aggregate(
                 [
                     {"$match": {"e_id": e_id}},
@@ -61,6 +62,18 @@ def getAppoint(e_id):
                 ]
             )
         )   
+        # res=[]
+        for i in data:
+            date=i['id']['start_date']
+            time=i['id']['time']
+
+            datetime_object = datetime.strptime(f'{date}', '%Y-%m-%d %H:%M:%S')
+            
+            datetime_object+= timedelta(days=table.index(time[0:3]))
+            i['id']['time']=int(f"0x{time[3]}",16)+7
+            i['id']['start_date']=datetime_object
+            
+        return data
     except:
         return "error"
     
