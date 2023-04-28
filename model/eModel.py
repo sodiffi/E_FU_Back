@@ -20,7 +20,7 @@ def getEpeople(e_id):
         mongo.db.user.aggregate(
             [
                 {
-                    "$match": {"id": {"$all": f_ids}},
+                    "$match": {"id": {"$in": f_ids}},
                 },
                 {
                     "$lookup": {
@@ -70,8 +70,8 @@ def getAppoint(e_id):
             datetime_object = datetime.strptime(f'{date}', '%Y-%m-%d %H:%M:%S')
             
             datetime_object+= timedelta(days=table.index(time[0:3]))
-            i['id']['time']=int(f"0x{time[3]}",16)+7
-            i['id']['start_date']=datetime_object
+            i["tf_id"]={"time":f'{int(f"0x{time[3]}",16)+7}:00',"start_date":datetime_object}
+            
             
         return data
     except:
