@@ -42,10 +42,8 @@ def login():
         s = TJSS(app.config['SECRET_KEY'], expires_in=3600)
         token = s.dumps({'username': id}).decode('utf-8')
         result["mes"] = "登入成功"
-        
         result["success"] = True
         result['data']={"user":result['data'],"token":token}
-        
         return ret(result)
     elif len(data) == 0:
         result["mes"] = "登入失敗"
@@ -74,7 +72,6 @@ def sign():
                 result["success"] = True
             else:
                     result["mes"] = "註冊異常"
-
     else:
         result["mes"] = "請填畢所有資料"
     return ret(result)

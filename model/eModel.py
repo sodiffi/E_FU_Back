@@ -3,6 +3,11 @@ import json
 from model.util import group
 from model.db import mongo
 
+def getProfile(e_id):
+    return list(mongo.db.user.find({"id":e_id},{"_id":0}))[0]
+
+def editProfile(e_id,name,sex,birth,phone):
+    return mongo.db.user.update_one({"id":e_id},{"$set": { "name":name,"sex":sex,"birth":birth,"phone":phone }})
 
 def getEpeople(e_id):
     p_list = list(mongo.db.appointment.find({"e_id": e_id}, {"_id": 0, "f_id": 1}))
