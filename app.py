@@ -2,7 +2,7 @@
 from flask import Flask,request,make_response,jsonify
 from itsdangerous import TimedJSONWebSignatureSerializer as TJSS
 import json
-from controller import(user,record,people,e)
+from controller import(user,record,people,e,work)
 from model.db import mongo
 from controller.util import checkParm, ret
 from model import (userModel)
@@ -18,6 +18,7 @@ app.register_blueprint(user.userAPI)
 app.register_blueprint(people.peopleProfile)
 app.register_blueprint(record.recordAPI)
 app.register_blueprint(e.eAPI)
+app.register_blueprint(work.workProfile)
 
 
 @app.route('/', methods=["POST"])
@@ -56,12 +57,12 @@ def login():
 @app.route("/sign", methods=["POST"])
 def sign():
     content = request.json
-    cond = ["account", "password", "age", "sex","name"]
+    cond = ["id", "password", "birthday", "name","phone","sex","role"]
     result = {"success": False, "mes": ""}
     t = checkParm(cond, content)
     print(t)
     if(isinstance(t, dict)):
-        hasUser = userModel.hasUser(t["account"])
+        hasUser = userModel.hasUser(t["id"])
         if len(hasUser) > 0:
             result["mes"] = "重複帳號"
         else:
