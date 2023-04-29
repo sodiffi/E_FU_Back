@@ -82,7 +82,7 @@ def getAppoint(t_id):
 
 
 def getAppointDetail(t_id, start_date, time):
-   try:
+    try:
         return list(
         mongo.db.appointment.aggregate(
             [
@@ -107,4 +107,4 @@ def getAppointDetail(t_id, start_date, time):
             ]
         )
     )
-   except:return "error"
+    except:return "error"
