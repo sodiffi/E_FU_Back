@@ -3,14 +3,14 @@ import json
 from model.util import group
 from model.db import mongo
 
-def getProfile(e_id):
-    return list(mongo.db.user.find({"id":e_id},{"_id":0}))[0]
+def getProfile(t_id):
+    return list(mongo.db.user.find({"id":t_id},{"_id":0}))[0]
 
-def editProfile(e_id,name,sex,birth,phone):
-    return mongo.db.user.update_one({"id":e_id},{"$set": { "name":name,"sex":sex,"birth":birth,"phone":phone }})
+def editProfile(t_id,name,sex,birth,phone):
+    return mongo.db.user.update_one({"id":t_id},{"$set": { "name":name,"sex":sex,"birth":birth,"phone":phone }})
 
-def getEpeople(e_id):
-    p_list = list(mongo.db.appointment.find({"e_id": e_id}, {"_id": 0, "f_id": 1}))
+def getEpeople(t_id):
+    p_list = list(mongo.db.appointment.find({"t_id": t_id}, {"_id": 0, "f_id": 1}))
     f_ids = []
     for i in p_list:
         f_ids.append(i["f_id"])
@@ -44,13 +44,13 @@ def getEpeople(e_id):
     except:
         return "error"
 
-def getAppoint(e_id):
+def getAppoint(t_id):
     table=["MON","THE","WED","THU","FRI","SAT","SUN"]
     try:
         data=list(
             mongo.db.appointment.aggregate(
                 [
-                    {"$match": {"e_id": e_id}},
+                    {"$match": {"t_id": t_id}},
                     {
                         "$group": {
                             "_id": {"start_date": "$start_date", "time": "$time"},
@@ -81,14 +81,14 @@ def getAppoint(e_id):
     
 
 
-def getAppointDetail(e_id, start_date, time):
+def getAppointDetail(t_id, start_date, time):
    try:
         return list(
         mongo.db.appointment.aggregate(
             [
                 {
                     "$match": {
-                        "e_id": e_id,
+                        "t_id": t_id,
                         "time": time,
                         "start_date": {"$eq": datetime.fromisoformat(start_date)},
                     }
@@ -103,7 +103,7 @@ def getAppointDetail(e_id, start_date, time):
                 },
                 {"$unwind": {"path": "$result"}},
                 {"$addFields": {"name": "$result.name"}},
-                {"$unset": ["result", "_id","e_id","start_date","time"]},
+                {"$unset": ["result", "_id","t_id","start_date","time"]},
             ]
         )
     )
