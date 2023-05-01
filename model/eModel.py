@@ -10,17 +10,17 @@ def editProfile(t_id,name,sex,birth,phone):
     return mongo.db.user.update_one({"id":t_id},{"$set": { "name":name,"sex":sex,"birth":birth,"phone":phone }})
 
 def getEpeople(t_id):
-    p_list = list(mongo.db.appointment.find({"t_id": t_id}, {"_id": 0, "f_id": 1}))
-    f_ids = []
+    p_list = list(mongo.db.appointment.find({"t_id": t_id}, {"_id": 0, "p_id": 1}))
+    p_ids = []
     for i in p_list:
-        f_ids.append(i["f_id"])
-    print(f_ids)
+        p_ids.append(i["p_id"])
+    print(p_ids)
     try:
         return list(
         mongo.db.user.aggregate(
             [
                 {
-                    "$match": {"id": {"$in": f_ids}},
+                    "$match": {"id": {"$in": p_ids}},
                 },
                 {
                     "$lookup": {
@@ -74,7 +74,8 @@ def getAppoint(t_id):
             
             
         return data
-    except:
+    except Exception as e:
+        print(e)
         return "error"
     
 
@@ -96,7 +97,7 @@ def getAppointDetail(t_id, start_date, time):
                 {
                     "$lookup": {
                         "from": "user",
-                        "localField": "f_id",
+                        "localField": "p_id",
                         "foreignField": "id",
                         "as": "result",
                     },

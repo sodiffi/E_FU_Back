@@ -6,6 +6,6 @@ def record(target):
     to_save=[]
     raw=json.loads(target['raw'])
     for b in raw:
-        b['arrange_id']=target['arrange_id']
+        b['a_id']=target['a_id']
         to_save.append(b)
-    return mongo.db.record.insert_many(to_save)
+    return mongo.db.rehabilion.insert_many(to_save)
