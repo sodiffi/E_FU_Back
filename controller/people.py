@@ -11,9 +11,9 @@ from .util import checkParm, ret,quickRet
 
 peopleProfile = Blueprint("people", __name__, url_prefix="/people")
 
-@peopleProfile.route("/", methods=["GET"])
-def get():
-    data = peopleModel.getpeople()
+@peopleProfile.route("/user_id/<user_id>", methods=["GET"])
+def get(user_id):
+    data = peopleModel.getpeople(user_id)
     print((data))
     print(type(data))
     result = {"success": False, "data": data}
@@ -48,15 +48,15 @@ def add():
     return ret(result)
 
 
-@peopleProfile.route("/search", methods=["POST"])
-def findname():
-    content = request.json
-    print(content)
-    name = content["name"]
-    data = peopleModel.findname(name)
-    print((data))
-    result = {"success": False, "data": data}
-    return ret(result)
+# @peopleProfile.route("/search", methods=["POST"])
+# def findname():
+#     content = request.json
+#     print(content)
+#     name = content["name"]
+#     data = peopleModel.findname(name)
+#     print((data))
+#     result = {"success": False, "data": data}
+#     return ret(result)
 
 
 @peopleProfile.route("/edit", methods=["POST"])

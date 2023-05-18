@@ -1,6 +1,8 @@
 from flask import Response
 import json
 from coder import MyEncoder
+from datetime import datetime, timedelta
+
 
 
 def group(data: dict, tag: list, identity: str):
@@ -35,3 +37,31 @@ def group(data: dict, tag: list, identity: str):
         temp[tag[j]] = tags[j]
     ret.append(temp)
     return ret
+
+def process_date(data):
+    table = ["MON", "THE", "WED", "THU", "FRI", "SAT", "SUN"]
+    for i in data:
+            date = i["id"]["start_date"]
+            time = i["id"]["time"]
+
+            datetime_object = datetime.strptime(f"{date}", "%Y-%m-%d %H:%M:%S")
+
+            datetime_object += timedelta(days=table.index(time[0:3]),hours=int(f"0x{time[3]}",16)+7)
+            i["tf_id"] = {
+                "time": f'{int(f"0x{time[3]}",16)+7}:00',
+                "start_date": datetime_object,
+            }
+            i["tf_time"]=datetime_object
+    return data
+
+def process_date_p(data):
+    table = ["MON", "THE", "WED", "THU", "FRI", "SAT", "SUN"]
+    for i in data:
+            date = i["start_date"]
+            time = i["time"]
+
+            datetime_object = datetime.strptime(f"{date}", "%Y-%m-%d %H:%M:%S")
+
+            datetime_object += timedelta(days=table.index(time[0:3]),hours=int(f"0x{time[3]}",16)+7)
+            i["tf_time"] = datetime_object
+    return data
