@@ -34,3 +34,11 @@ def hasUser(account):
         return list(mongo.db.user.find({"account": account}))
     except:
         return "error"
+
+
+def addpatient(data):
+    try:
+        mongo.db.patient.insert_one(data)
+        return ""
+    except:
+        return "error"
