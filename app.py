@@ -57,7 +57,7 @@ def login():
 @app.route("/sign", methods=["POST"])
 def sign():
     content = request.json
-    cond = ["id", "password", "birthday", "name","phone","sex","role"]
+    cond = ["id", "password", "birthday", "name","phone","sex","role","height"]
     result = {"success": False, "mes": ""}
     t = checkParm(cond, content)
     print(t)
@@ -67,12 +67,22 @@ def sign():
             result["mes"] = "重複帳號"
         else:
             data = userModel.sign(t)
-
             if(data.inserted_id):
                 result["mes"] = "註冊成功"
                 result["success"] = True
+                if t["role"]==2:
+                    p_con=["height"]
+                    p_t=checkParm(p_con,content)
+                    if(isinstance(p_t,dict)):
+                        p_t["disease"] = [""]
+                        p_t["sets"] = [5,5,5]
+                        p_t["p_id"] = t["id"]
+                        print(p_t)
+                        c = userModel.addpatient(p_t)
+                        if(len(c) >0):
+                            result["mes"]+=":but something error"
             else:
-                    result["mes"] = "註冊異常"
+                result["mes"] = "註冊異常"
     else:
         result["mes"] = "請填畢所有資料"
     return ret(result)
