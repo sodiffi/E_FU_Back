@@ -10,10 +10,11 @@ def editProfile(t_id,name,sex,birth,phone):
     return mongo.db.user.update_one({"id":t_id},{"$set": { "name":name,"sex":sex,"birth":birth,"phone":phone }})
 
 def getEpeople(t_id):
-    p_list = list(mongo.db.appointment.find({"t_id": t_id}, {"_id": 0, "f_id": 1}))
+    p_list = list(mongo.db.appointment.find({"t_id": t_id}, {"_id": 0, "p_id": 1}))
+    print(p_list)
     f_ids = []
     for i in p_list:
-        f_ids.append(i["f_id"])
+        f_ids.append(i["p_id"])
     print(f_ids)
     try:
         return list(
