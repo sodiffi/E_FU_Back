@@ -4,7 +4,8 @@ from .util import checkParm, ret
 
 recordAPI = Blueprint("record", __name__, url_prefix="/record")
 
-@recordAPI.route("",methods=["POST"])
+
+@recordAPI.route("", methods=["POST"])
 def add_record():
     # token_type, access_token = request.headers.get('Authorization').split(' ')
     # if token_type != 'Bearer' or token_type is None:
@@ -12,9 +13,8 @@ def add_record():
     #     pass
     # return "test"
     if request.is_json:
-        data=request.get_json()
-        
-        recordModel.record(data)
-        
-    return "ok"    
-    
+        data = request.get_json()
+
+        recordModel.record(data["a_id"], data["done"], data["raw"])
+
+    return "ok"
