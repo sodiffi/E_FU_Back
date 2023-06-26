@@ -2,7 +2,7 @@
 from flask import Flask,request,make_response,jsonify
 from itsdangerous import TimedJSONWebSignatureSerializer as TJSS
 import json
-from controller import(user,record,people,e,work)
+from controller import(user,record,people,e,work,mo)
 from model.db import mongo
 from controller.util import checkParm, ret
 from model import (userModel)
@@ -10,7 +10,7 @@ from model import (userModel)
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'ABCDEFhijklm'
-app.config["MONGO_URI"] = "mongodb+srv://numbone112:i3PO8xrZj1KRwz83@cluster0.5rqnhen.mongodb.net/efu"
+app.config["MONGO_URI"] = "mongodb+srv://numbone112:i3PO8xrZj1KRwz83@cluster0.5rqnhen.mongodb.net/mcubed"
 mongo.init_app(app) # initialize here!
 print(type(mongo))
 print((mongo.db.name))
@@ -19,6 +19,7 @@ app.register_blueprint(people.peopleProfile)
 app.register_blueprint(record.recordAPI)
 app.register_blueprint(e.eAPI)
 app.register_blueprint(work.workProfile)
+app.register_blueprint(mo.moProfile)
 
 
 @app.route('/', methods=["POST"])
