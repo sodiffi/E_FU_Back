@@ -5,19 +5,18 @@ from datetime import datetime,timedelta
 
 # name,gender,birth,height,weight
 
-def getmofriend(friend_ids):
+def getmoFriend(friend_ids,hidden_ids):
     return list(mongo.db.user.aggregate(
                 [
                     {
-                        "$match": {"id": {"$in": friend_ids}},
+                        "$match": {"id": {"$in": friend_ids,"$nin": hidden_ids}},
                     },
                     {"$unset": ["_id","password","friend","hide_friend"]},
                 ]
             ))
 
-# def addpeople(uid,name,gender,birth,height,weight,disease_id):
-#     return list(mongo.db.people.insert_one({"uuid":uid,"name":name,"gender":gender,"birth":birth,"height":height,"weight":weight,"disease_id":disease_id}))
-
+def getHideFriend(user_id):
+    return list(mongo.db.user.find({"id": user_id}, {"_id": 0,"hide_friend":1}))
 # def findname(name):
 #     return list(mongo.db.people.find({"name":name},{"_id":0}))
 
