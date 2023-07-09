@@ -2,7 +2,7 @@
 from flask import Flask,request,make_response,jsonify
 from itsdangerous import TimedJSONWebSignatureSerializer as TJSS
 import json
-from controller import(user,record,people,e,work,mo)
+from controller import(user,record,people,e,work,mo,invite)
 from model.db import mongo
 from controller.util import checkParm, ret
 from model import (userModel)
@@ -20,6 +20,7 @@ app.register_blueprint(record.recordAPI)
 app.register_blueprint(e.eAPI)
 app.register_blueprint(work.workProfile)
 app.register_blueprint(mo.moProfile)
+app.register_blueprint(invite.inviteAPI)
 
 
 @app.route('/', methods=["POST"])
