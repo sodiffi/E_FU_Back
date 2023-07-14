@@ -3,7 +3,7 @@ from model.util import group
 from model.db import mongo
 from datetime import datetime,timedelta
 
-def addinvite(id,name,m_id,friend,time,remark):
+def addinvite(id,name,m_id,friend,time,remark): #新增活動
     return mongo.db.Invite.insert_one(
         {
             "id": id,
@@ -16,7 +16,7 @@ def addinvite(id,name,m_id,friend,time,remark):
     )
 
 
-def editinvite(id,name,m_id,friend,time,remark):
+def editinvite(id,name,m_id,friend,time,remark): #修改活動
     return mongo.db.Invite.update_one(
         {"id": id, "m_id":m_id},
         {
@@ -28,6 +28,12 @@ def editinvite(id,name,m_id,friend,time,remark):
             }
         },
     )
+
+# def accept(m_id,a_id,accept):
+#     return ''
+
+# def reject():
+#     return ''
 
 
     """ try:
