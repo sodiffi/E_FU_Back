@@ -24,7 +24,6 @@ def addinvite(m_id):
                 check["remark"]
             )
             print(temp)
-            # print(temp.inserted_id)
             result["mes"] = "新增邀約成功"
             result["success"] = True
             return ret(result) 
@@ -33,7 +32,26 @@ def addinvite(m_id):
         return ret(result)    
         
         
+@inviteAPI.route("/<m_id>/edit", methods=["POST"])
+def editinvite():
+    check = request.json
+    print(check)
+    result = {"success": False, "mes": ""}
+    id=check["id"],
+    name=check["name"],
+    m_id=check["m_id"],
+    friend=check["friend"],
+    time=check["time"],
+    remark=check["remark"]
+    if(result["mes"] == ""):
+        data = inviteModel.editinvite(id, name, m_id, friend, time, remark)
+        print((data))
+        result["mes"] = "編輯成功"
+        result["success"] = True
+    return ret(result)
         
+
+    
     """ data = inviteModel.addinviteid(t)
         if(data.inserted_id):
             result["mes"] = "新增邀約成功"
