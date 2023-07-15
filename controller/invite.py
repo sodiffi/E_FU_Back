@@ -13,7 +13,6 @@ def addinvite(m_id):
     print(check)
 
     if(isinstance(check, dict)):
-        # hasInvite = inviteModel.hasInvite(check["id"])
         if type(check) == dict:
             temp=inviteModel.addinvite(
                 check["id"],
@@ -32,23 +31,26 @@ def addinvite(m_id):
         return ret(result)    
         
         
-@inviteAPI.route("/<m_id>/edit", methods=["POST"])
-def editinvite():
-    check = request.json
+@inviteAPI.route("/<m_id>/edit/<id>", methods=["POST"])
+def editinvite(m_id,id):
+    cond = ["name", "friend", "time", "remark"]
+    check = checkParm(cond, request.json)
     print(check)
     result = {"success": False, "mes": ""}
-    id=check["id"],
-    name=check["name"],
-    m_id=check["m_id"],
-    friend=check["friend"],
-    time=check["time"],
-    remark=check["remark"]
-    if(result["mes"] == ""):
-        data = inviteModel.editinvite(id, name, m_id, friend, time, remark)
-        print((data))
-        result["mes"] = "編輯成功"
-        result["success"] = True
-    return ret(result)
+    name = check["name"]
+    friend = check["friend"]
+    time = check["time"]
+    remark = check["remark"]
+    if(isinstance(check, dict)):
+        if type(check) == dict:
+            data = inviteModel.editinvite(id, name, m_id, friend, time, remark)
+            print((data))
+            result["mes"] = "編輯成功"
+            result["success"] = True
+        return ret(result)
+    else:
+        result["mes"] = "修改失敗"
+        return ret(result)  
         
 
     
