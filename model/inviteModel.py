@@ -15,7 +15,6 @@ def addinvite(id,name,m_id,friend,time,remark):
         }
     )
 
-
 def editinvite(id,name,m_id,friend,time,remark):
     return mongo.db.Invite.update_one(
         {"id": id, "m_id":m_id},
@@ -29,6 +28,8 @@ def editinvite(id,name,m_id,friend,time,remark):
         },
     )
 
+def findmid(m_id, id):
+    return list(mongo.db.Invite.find({"m_id": m_id,"id": id}, {"_id": 0}))
 
     """ try:
         mongo.db.inviteid.insert_one(data)

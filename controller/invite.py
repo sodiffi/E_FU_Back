@@ -5,7 +5,7 @@ from model.db import mongo
 
 inviteAPI = Blueprint("invite", __name__, url_prefix="/invite")
 
-@inviteAPI.route("/<m_id>/add", methods=["POST"])
+@inviteAPI.route("/<m_id>/add", methods=["POST"]) #新增邀約
 def addinvite(m_id):
     cond = ["id", "name", "friend","time","remark"]
     result = {"success": False, "mes": ""}
@@ -29,9 +29,9 @@ def addinvite(m_id):
     else : 
         result["mes"] = "新增邀約異常"
         return ret(result)    
-        
-        
-@inviteAPI.route("/<m_id>/edit/<id>", methods=["POST"])
+
+  
+@inviteAPI.route("/<m_id>/edit/<id>", methods=["POST"]) #修改邀約
 def editinvite(m_id,id):
     cond = ["name", "friend", "time", "remark"]
     check = checkParm(cond, request.json)
@@ -51,7 +51,20 @@ def editinvite(m_id,id):
     else:
         result["mes"] = "修改失敗"
         return ret(result)  
-        
+
+
+@inviteAPI.route("/edit", methods=["POST"]) 
+def edit():
+    check = request.json
+    print(check)
+    m_id = check["m_id"]
+    id = check["id"]
+    data = inviteModel.findmid(m_id,id)
+    print((data))
+    result = {"success": False, "data": data}
+    return ret(result)
+
+           
 
     
     """ data = inviteModel.addinviteid(t)
