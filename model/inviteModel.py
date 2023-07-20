@@ -16,6 +16,7 @@ def addinvite(id,name,m_id,friend,time,remark): #新增活動
     )
 
 
+
 def editinvite(id,name,m_id,friend,time,remark): #修改活動
     return mongo.db.Invite.update_one(
         {"id": id, "m_id":m_id},
@@ -29,11 +30,16 @@ def editinvite(id,name,m_id,friend,time,remark): #修改活動
         },
     )
 
+
+def findmid(m_id, id):
+    return list(mongo.db.Invite.find({"m_id": m_id,"id": id}, {"_id": 0}))
+
 # def accept(m_id,a_id,accept):
 #     return ''
 
 # def reject():
 #     return ''
+
 
 
     """ try:
