@@ -15,9 +15,28 @@ def getmoFriend(friend_ids,hidden_ids):
                 ]
             ))
 
-#要有名字
-def getHideFriend(user_id): 
+def getHideFriendid(user_id): 
     return list(mongo.db.user.find({"id": user_id}, {"_id": 0,"hide_friend":1}))
+    
+
+def getHideFriendData(hidelist): 
+    return list(mongo.db.user.aggregate(
+            [
+                {
+                    '$match': {
+                        'id': {
+                            '$in':hidelist
+                        }
+                    }
+                }, {
+                    '$project': {
+                        'name': 1, 
+                        'id': 1, 
+                        '_id': 0
+                    }
+                }
+            ]
+        ))
 
 
 def doHideFriend(user_id,hide_id):

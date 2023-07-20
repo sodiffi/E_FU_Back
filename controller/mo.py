@@ -13,10 +13,8 @@ def get(user_id):
     for i in mo_list:
         friend_ids.append(i["friend"])
         hidden_ids.append(i["hide_friend"])
-    print(friend_ids)
     try:
         data = moModel.getmoFriend(friend_ids[0],hidden_ids[0])
-        print(data)
         return quickRet(data)
     except:
         return "error"
@@ -26,10 +24,19 @@ def get(user_id):
 @moProfile.route("/<user_id>/hide", methods=["GET"])
 def gethidden(user_id):
     try:
-        data = moModel.getHideFriend(user_id)
-        return quickRet(data)
+        hidelist = moModel.getHideFriendid(user_id)
+        hidden_ids = []
+        for i in hidelist:
+            hidden_ids.append(i["hide_friend"])
+        if hidden_ids[0] != []:
+            data = moModel.getHideFriendData(hidden_ids[0])
+            return quickRet(data)
+        else:
+            result = {"success": False, "mes": "查無資料"}
+            return result
     except:
-        return "error"
+        result = {"success": False, "mes": "error"}
+        return result
 
 
 @moProfile.route("/<user_id>/dohide", methods=["POST"])
@@ -43,7 +50,6 @@ def dohidden(user_id):
                 user_id,
                 check["id"]
             )
-            print(data)
             result["mes"] = "已隱藏"
             result["success"] = True
             return ret(result) 
@@ -62,7 +68,6 @@ def doshow(user_id):
                 user_id,
                 check["id"]
             )
-            print(data)
             result["mes"] = "已取消隱藏"
             result["success"] = True
             return ret(result) 
