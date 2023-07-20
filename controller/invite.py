@@ -52,31 +52,15 @@ def editinvite(m_id,id):
         result["mes"] = "資料有誤，修改失敗"
         return ret(result)
 
-# @inviteAPI.route("/<m_id>/invite", methods=["GET"]) #查看活動
-# def getinvite(m_id):
-#     cond = ["id", "name", "friend","time","remark"]
-#     result = {"success": False, "mes": ""}
-#     check = checkParm(cond, request.json)
-#     print(check)
-
-#     if(isinstance(check, dict)):
-#         if type(check) == dict:
-#             temp=inviteModel.addinvite(
-#                 check["id"],
-#                 check["name"],
-#                 m_id,
-#                 check["friend"],
-#                 check["time"],
-#                 check["remark"]
-#             )
-#             print(temp)
-#             result["mes"] = "新增邀約成功"
-#             result["success"] = True
-#             return ret(result) 
-#     else : 
-#         result["mes"] = "新增邀約異常"
-#         return ret(result)    
-        
+@inviteAPI.route("/<m_id>/invite", methods=["GET"]) #查看活動列表
+def getinvite(m_id):
+    temp=inviteModel.addinvite()
+    if(temp[0] !=[]):
+        print(temp)
+        return quickRet(temp) 
+    else : 
+        result = {"success": False, "mes": "查無資料"}
+        return ret(result)
 
 # @inviteAPI.route("/<m_id>/<a_id>", methods=["POST"]) #使用者回復邀約
 # def replyinvite():
