@@ -15,8 +15,36 @@ def getmoFriend(friend_ids,hidden_ids):
                 ]
             ))
 
-def getHideFriend(user_id):
+def getHideFriendid(user_id): 
     return list(mongo.db.user.find({"id": user_id}, {"_id": 0,"hide_friend":1}))
+    
+
+def getHideFriendData(hidelist): 
+    return list(mongo.db.user.aggregate(
+            [
+                {
+                    '$match': {
+                        'id': {
+                            '$in':hidelist
+                        }
+                    }
+                }, {
+                    '$project': {
+                        'name': 1, 
+                        'id': 1, 
+                        '_id': 0
+                    }
+                }
+            ]
+        ))
+
+
+def doHideFriend(user_id,hide_id):
+    return mongo.db.user.update_one({"id": user_id}, {"$push": { "hide_friend":hide_id}})
+
+def doShowFriend(user_id,show_id):
+    return mongo.db.user.update_one({"id": user_id}, {"$pull": { "hide_friend":show_id}})
+
 # def findname(name):
 #     return list(mongo.db.people.find({"name":name},{"_id":0}))
 
