@@ -15,7 +15,7 @@ def addinvite(m_id):
 
     if(isinstance(check, dict)):
         if type(check) == dict:
-            temp=inviteModel.addinvite(
+            data=inviteModel.addinvite(
                 check["id"],
                 check["name"],
                 m_id,
@@ -23,7 +23,7 @@ def addinvite(m_id):
                 check["time"],
                 check["remark"]
             )
-            print(temp)
+            print(data)
             result["mes"] = "新增邀約成功"
             result["success"] = True
             return ret(result) 
@@ -68,11 +68,22 @@ def edit():
 
 
 @inviteAPI.route("/<m_id>/invite", methods=["GET"]) #查看活動列表
-def getinvite(m_id):
-    temp=inviteModel.addinvite()
-    if(temp[0] !=[]):
-        print(temp)
-        return quickRet(temp) 
+def getinviteList(m_id):
+    data=inviteModel.getinviteList(m_id)
+    if(data[0] !=[]):
+        print(data)
+        return quickRet(data) 
+    else : 
+        result = {"success": False, "mes": "查無資料"}
+        return ret(result)
+    
+    
+@inviteAPI.route("/<m_id>/invite/<a_id>", methods=["GET"]) #查看活動內容
+def getinviteDetail(m_id):
+    data=inviteModel.getinviteDetail(m_id)
+    if(data[0] !=[]):
+        print(data)
+        return quickRet(data) 
     else : 
         result = {"success": False, "mes": "查無資料"}
         return ret(result)

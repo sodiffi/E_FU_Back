@@ -33,6 +33,32 @@ def editinvite(id,name,m_id,friend,time,remark): #修改活動
 
 def findmid(m_id, id):
     return list(mongo.db.Invite.find({"m_id": m_id,"id": id}, {"_id": 0}))
+def getinviteList(id,name,m_id,friend,time,remark): #新增活動
+    return mongo.db.Invite.insert_one(
+        {
+            "id": id,
+            "name": name,
+            "m_id": m_id,
+            "friend": friend,
+            "time": time,
+            "remark": remark,
+        }
+    )
+
+
+def getinviteDetail(id,name,m_id,friend,time,remark): #修改活動
+    return mongo.db.Invite.update_one(
+        {"id": id, "m_id":m_id},
+        {
+            "$set": {
+                "name": name,
+                "friend": friend,
+                "time": time,
+                "remark": remark
+            }
+        },
+    )
+
 
 # def accept(m_id,a_id,accept):
 #     return ''
