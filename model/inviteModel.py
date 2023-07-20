@@ -76,19 +76,9 @@ def getinviteList(m_id,acceptList): #邀約列表
             ]
         ))
 
+def getinviteDetail(m_id, id): #邀約詳細資料
+    return list(mongo.db.Invite.find({"m_id":m_id,"id":id},{"_id":0}))
 
-def getinviteDetail(id,name,m_id,friend,time,remark): #修改活動
-    return mongo.db.Invite.update_one(
-        {"id": id, "m_id":m_id},
-        {
-            "$set": {
-                "name": name,
-                "friend": friend,
-                "time": time,
-                "remark": remark
-            }
-        },
-    )
 
 
 # def accept(m_id,a_id,accept):

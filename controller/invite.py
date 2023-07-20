@@ -68,16 +68,30 @@ def getinviteList(m_id):
         result = {"success": False, "mes": "查無資料"}
         return ret(result)
     
-    
-@inviteAPI.route("/<m_id>/invite/<a_id>", methods=["GET"]) #查看活動內容
-def getinviteDetail(m_id):
-    data=inviteModel.getinviteDetail(m_id)
-    if(data[0] !=[]):
+
+#查看邀約內容
+@inviteAPI.route("/<m_id>/<id>", methods=["GET"]) 
+def getinviteDetail(m_id,id):
+    try:
+        print(123)
+        data = inviteModel.getinviteDetail(m_id,int(id))
         print(data)
-        return quickRet(data) 
-    else : 
+        return quickRet(data)
+    except: 
         result = {"success": False, "mes": "查無資料"}
         return ret(result)
+    
+    
+# @inviteAPI.route("/edit", methods=["POST"]) 
+# def edit():
+#     check = request.json
+#     print(check)
+#     m_id = check["m_id"]
+#     id = check["id"]
+#     data = inviteModel.getinviteDetail(m_id,id)
+#     print((data))
+#     result = {"success": False, "data": data}
+#     return ret(result)
 
 # @inviteAPI.route("/<m_id>/<a_id>", methods=["POST"]) #使用者回復邀約
 # def replyinvite():
