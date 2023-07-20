@@ -13,8 +13,10 @@ def get(user_id):
     for i in mo_list:
         friend_ids.append(i["friend"])
         hidden_ids.append(i["hide_friend"])
+    print(friend_ids)
     try:
-        data = moModel.getmofriend(friend_ids[0],hidden_ids[0])
+        data = moModel.getmoFriend(friend_ids[0],hidden_ids[0])
+        print(data)
         return quickRet(data)
     except:
         return "error"
