@@ -82,34 +82,27 @@ def getinviteDetail(m_id,id):
         return ret(result)
     
     
-# @inviteAPI.route("/edit", methods=["POST"]) 
-# def edit():
-#     check = request.json
-#     print(check)
-#     m_id = check["m_id"]
-#     id = check["id"]
-#     data = inviteModel.getinviteDetail(m_id,id)
-#     print((data))
-#     result = {"success": False, "data": data}
-#     return ret(result)
 
-# @inviteAPI.route("/<m_id>/<a_id>", methods=["POST"]) #使用者回復邀約
-# def replyinvite():
-#     check = request.json
-#     print(check)
-#     result = {"success": False, "mes": ""}
-#     id=check["id"],
-#     name=check["name"],
-#     # m_id=check["m_id"],
-#     friend=check["friend"],
-#     time=check["time"],
-#     remark=check["remark"]
-#     if(result["mes"] == ""):
-#         data = inviteModel.editinvite(id, name, m_id, friend, time, remark)
-#         print((data))
-#         result["mes"] = "編輯成功"
-#         result["success"] = True
-#     return ret(result)
+@inviteAPI.route("/<m_id>/<id>", methods=["POST"]) #使用者回復邀約
+def replyinvite(m_id,id):
+    cond = ["accept"]
+    check = checkParm(cond, request.json)
+    result = {"success": False, "mes": ""}
+    if(isinstance(check, dict)):
+        if type(check) == dict:
+            try:
+                accept=check["accept"]
+                inviteModel.replyinvite(m_id, int(id), accept)
+                if(accept):
+                    result["mes"] = "已接受邀約"
+                else:
+                    result["mes"] = "已拒絕邀約"
+                result["success"] = True
+                return ret(result)
+            except:
+                return ret(result)
+    else:
+        result["mes"] = "資料傳遞錯誤"
+        return ret(result)
 
-    
 

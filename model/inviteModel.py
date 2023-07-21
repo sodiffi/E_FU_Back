@@ -81,8 +81,15 @@ def getinviteDetail(m_id, id): #邀約詳細資料
 
 
 
-# def accept(m_id,a_id,accept):
-#     return ''
+def replyinvite(m_id,a_id,accept):
+    return mongo.db.Invite_detail.update_one(
+        {"a_id": a_id, "user_id":m_id},
+        {
+            "$set": {
+                "accept": accept,
+            }
+        },
+    )
 
 # def reject():
 #     return ''
