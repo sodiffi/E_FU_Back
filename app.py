@@ -6,6 +6,7 @@ from controller import(user,record,people,e,work,mo,invite)
 from model.db import mongo
 from controller.util import checkParm, ret
 from model import (userModel)
+from mongoengine import Document, StringField,DateTimeField, SequenceField
 
 
 app = Flask(__name__)

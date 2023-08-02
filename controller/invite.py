@@ -14,18 +14,31 @@ def addinvite(m_id):
 
     if(isinstance(check, dict)):
         if type(check) == dict:
-            data=inviteModel.addinvite(
-                check["id"],
-                check["name"],
-                m_id,
-                check["friend"],
-                check["time"],
-                check["remark"]
+            id = check["id"]
+            name = check["name"]
+            friend = check["friend"]
+            time = check["time"]
+            remark = check["remark"]
+            inviteModel.addinvite(
+                id,name,m_id,friend,time,remark
             )
-            print(data)
-            result["mes"] = "新增邀約成功"
-            result["success"] = True
-            return ret(result) 
+            friend = []
+            for i in check["friend"]:
+                friend.append(i)
+            if(friend != []): #加try 查看看mongo有沒有transaction
+                try:
+                    for i in range(0,len(friend)):
+                        inviteModel.addinvitedetail(id,friend[i])
+                    result["mes"] = "新增邀約成功"
+                    result["success"] = True
+                    return ret(result) 
+                except:
+                    result["mes"] = "好友邀約失敗"
+                    return ret(result)
+            else:
+                result["mes"] = "新增邀約成功，您暫無邀請任何好友"
+                result["success"] = True
+                return ret(result) 
     else : 
         result["mes"] = "新增邀約異常"
         return ret(result)    
@@ -73,17 +86,15 @@ def getinviteList(m_id):
 @inviteAPI.route("/<m_id>/<id>", methods=["GET"]) 
 def getinviteDetail(m_id,id):
     try:
-        print(123)
         data = inviteModel.getinviteDetail(m_id,int(id))
-        print(data)
         return quickRet(data)
     except: 
         result = {"success": False, "mes": "查無資料"}
         return ret(result)
     
     
-
-@inviteAPI.route("/<m_id>/<id>", methods=["POST"]) #使用者回復邀約
+#使用者回復邀約
+@inviteAPI.route("/<m_id>/<id>", methods=["POST"]) 
 def replyinvite(m_id,id):
     cond = ["accept"]
     check = checkParm(cond, request.json)
@@ -104,5 +115,4 @@ def replyinvite(m_id,id):
     else:
         result["mes"] = "資料傳遞錯誤"
         return ret(result)
-
 

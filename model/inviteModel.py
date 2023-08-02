@@ -2,6 +2,7 @@ import json
 from model.util import group
 from model.db import mongo
 from datetime import datetime,timedelta
+import numpy as np
 
 def addinvite(id,name,m_id,friend,time,remark): #新增邀約
     return mongo.db.Invite.insert_one(
@@ -12,6 +13,21 @@ def addinvite(id,name,m_id,friend,time,remark): #新增邀約
             "friend": friend,
             "time": time,
             "remark": remark,
+        }
+    )
+
+def addinvitedetail(a_id,user_id):
+    return mongo.db.Invite_detail.insert_one(
+        {
+            "a_id":a_id,
+            "user_id":user_id,
+            "accept":np.nan,
+            "done":{
+                "sets_no":0,
+                "item_id":0,
+                "times":0,
+                "level":''
+            }
         }
     )
 
@@ -75,6 +91,7 @@ def getinviteList(m_id,acceptList): #邀約列表
                 }
             ]
         ))
+
 
 def getinviteDetail(m_id, id): #邀約詳細資料
     return list(mongo.db.Invite.find({"m_id":m_id,"id":id},{"_id":0}))
