@@ -88,12 +88,16 @@ def getacceptList(m_id,acceptList):
                             }
                         ]
                     }
+                },{
+                    '$sort': {
+                        'time': 1
+                    }
                 }
             ]
         ))
 
 #邀約列表 - 拒絕
-def rejectList(m_id): 
+def getrejectID(m_id): 
     return list(mongo.db.Invite_detail.aggregate(
         [
             {
@@ -109,8 +113,28 @@ def rejectList(m_id):
         ]
     ))
 
+def getrejectList(rejectList): 
+    return list(mongo.db.Invite.aggregate(
+            [
+                {
+                    '$match': {
+                        'id': {'$in': rejectList}
+                    }
+                }, {
+                    '$project': {
+                        'id': 1, 'name': 1, 'time': 1, '_id': 0
+                    }
+                },{
+                    '$sort': {
+                        'time': 1
+                    }
+                }
+            ]
+        ))
+
+
 #邀約列表 - 未回應
-def unreplyList(m_id): 
+def getunreplyID(m_id): 
     return list(mongo.db.Invite_detail.aggregate(
         [
             {
@@ -125,6 +149,25 @@ def unreplyList(m_id):
             }
         ]
     ))
+
+def getunreplyList(unreplyList): 
+    return list(mongo.db.Invite.aggregate(
+            [
+                {
+                    '$match': {
+                        'id': {'$in': unreplyList}
+                    }
+                }, {
+                    '$project': {
+                        'id': 1, 'name': 1, 'time': 1, '_id': 0
+                    }
+                },{
+                    '$sort': {
+                        'time': 1
+                    }
+                }
+            ]
+        ))
 
 #邀約列表 - 全部
 def getinviteList(m_id,acceptList): 
