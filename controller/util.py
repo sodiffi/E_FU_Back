@@ -3,6 +3,22 @@ import json
 from itsdangerous import TimedJSONWebSignatureSerializer as TJSS,BadSignature,SignatureExpired
 from coder import MyEncoder
 import app
+from model.db import mongo
+from pymongo import MongoClient
+from pymongo.collection import ReturnDocument
+
+def get_next_id(collection_name):
+    # 首先讀取計數器的值並遞增
+    counter = mongo.db.counters.find_one_and_update(
+        {'_id': collection_name},
+        {'$inc': {'count': 1}},
+        upsert=True,  # 如果文檔不存在，創建一個新的文檔
+        return_document=ReturnDocument.AFTER
+    )
+    
+    # 使用遞增後的計數器值來生成自增 ID
+    next_id = counter['count']
+    return next_id
 
 
 def checkParm(cond, content, option=None):

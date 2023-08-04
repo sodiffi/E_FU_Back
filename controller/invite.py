@@ -1,24 +1,27 @@
 from flask import Blueprint, request
 from model import inviteModel
-from .util import checkParm, ret, quickRet
+from .util import checkParm, ret, quickRet,get_next_id
 from model.db import mongo
+
 
 inviteAPI = Blueprint("invite", __name__, url_prefix="/invite")
 
 #新增邀約
 @inviteAPI.route("/<m_id>/add", methods=["POST"]) 
 def addinvite(m_id):
-    cond = ["id", "name", "friend","time","remark"]
+    cond = ["name", "friend","time","remark"]
     result = {"success": False, "mes": ""}
     check = checkParm(cond, request.json)
 
     if(isinstance(check, dict)):
         if type(check) == dict:
-            id = check["id"]
+            # id = check["id"]
             name = check["name"]
             friend = check["friend"]
             time = check["time"]
             remark = check["remark"]
+            id = get_next_id("Invite")
+            print(id)
             inviteModel.addinvite(
                 id,name,m_id,friend,time,remark
             )
@@ -114,6 +117,7 @@ def getinviteList(m_id,mode):
             data = inviteModel.getinviteList(m_id,accept,reject,unreply)
             # data={"accept":accept,"reject":reject,"unreply":unreply}
             return quickRet(data)
+
 
 def getaccept(m_id):
     acceptID=inviteModel.getacceptID(m_id)
