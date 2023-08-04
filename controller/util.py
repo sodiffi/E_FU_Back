@@ -4,7 +4,6 @@ from itsdangerous import TimedJSONWebSignatureSerializer as TJSS,BadSignature,Si
 from coder import MyEncoder
 import app
 from model.db import mongo
-from pymongo import MongoClient
 from pymongo.collection import ReturnDocument
 
 def get_next_id(collection_name):
