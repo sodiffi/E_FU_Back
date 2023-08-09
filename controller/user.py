@@ -4,7 +4,7 @@ from .util import checkParm, ret
 
 userAPI = Blueprint("user", __name__, url_prefix="/user")
 
-@userAPI.route("/test",methods=["GET"])
+@userAPI.route("/t/test",methods=["GET"])
 def test():
     token_type, access_token = request.headers.get('Authorization').split(' ')
     if token_type != 'Bearer' or token_type is None:
