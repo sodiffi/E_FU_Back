@@ -46,7 +46,7 @@ def getAppoint(t_id):
     return quickRet(eModel.getAppoint(t_id))
 
 
-@eAPI.route("a/d", methods=["GET"])
+@eAPI.route("/a/d", methods=["GET"])
 def getAppointDetail():
     cond = ["start_date", "time", "t_id"]
     check = checkParm(cond, request.args)

@@ -1,19 +1,20 @@
 from flask import Blueprint, request
 from model import inviteModel
-from .util import checkParm, ret, quickRet,get_next_id
+from .util import checkParm, ret, quickRet, get_next_id
 from model.db import mongo
 
 
 inviteAPI = Blueprint("invite", __name__, url_prefix="/invite")
 
-#新增邀約
-@inviteAPI.route("/<m_id>", methods=["POST"]) 
+
+# 新增邀約
+@inviteAPI.route("/<m_id>", methods=["POST"])
 def addinvite(m_id):
-    cond = ["name", "friend","time","remark"]
+    cond = ["name", "friend", "time", "remark"]
     result = {"success": False, "mes": ""}
     check = checkParm(cond, request.json)
 
-    if(isinstance(check, dict)):
+    if isinstance(check, dict):
         if type(check) == dict:
             # id = check["id"]
             name = check["name"]
@@ -22,43 +23,41 @@ def addinvite(m_id):
             remark = check["remark"]
             id = get_next_id("Invite")
             print(id)
-            inviteModel.addinvite(
-                id,name,m_id,friend,time,remark
-            )
+            inviteModel.addinvite(id, name, m_id, friend, time, remark)
             friend = []
             for i in check["friend"]:
                 friend.append(i)
-            if(friend != []): #加try 查看看mongo有沒有transaction
+            if friend != []:  # 加try 查看看mongo有沒有transaction
                 try:
-                    for i in range(0,len(friend)):
-                        inviteModel.addinvitedetail(id,friend[i])
+                    for i in range(0, len(friend)):
+                        inviteModel.addinvitedetail(id, friend[i])
                     result["mes"] = "新增邀約成功"
                     result["success"] = True
-                    return ret(result) 
+                    return ret(result)
                 except:
                     result["mes"] = "好友邀約失敗"
                     return ret(result)
             else:
                 result["mes"] = "新增邀約成功，您暫無邀請任何好友"
                 result["success"] = True
-                return ret(result) 
-    else : 
+                return ret(result)
+    else:
         result["mes"] = "新增邀約異常"
-        return ret(result)    
+        return ret(result)
 
 
-#修改邀約
-@inviteAPI.route("/<m_id>/<id>", methods=["PUT"]) 
-def editinvite(m_id,id):
-    cond = ["name", "friend","time","remark"]
+# 修改邀約
+@inviteAPI.route("/<m_id>/<id>", methods=["PUT"])
+def editinvite(m_id, id):
+    cond = ["name", "friend", "time", "remark"]
     check = checkParm(cond, request.json)
     print(check)
     result = {"success": False, "mes": ""}
-    name=check["name"]
-    friend=check["friend"]
-    time=check["time"]
-    remark=check["remark"]
-    if(isinstance(check, dict)):
+    name = check["name"]
+    friend = check["friend"]
+    time = check["time"]
+    remark = check["remark"]
+    if isinstance(check, dict):
         if type(check) == dict:
             data = inviteModel.editinvite(id, name, m_id, friend, time, remark)
             print((data))
@@ -67,7 +66,16 @@ def editinvite(m_id,id):
             return ret(result)
     else:
         result["mes"] = "修改失敗"
-        return ret(result)  
+        return ret(result)
+
+
+# 邀請列表使用另外的MQL
+@inviteAPI.route("/list2/<user_id>/<int:mode>", methods=["GET"])
+def inviteList(user_id, mode):
+    data = inviteModel.invitelist(user_id, mode)
+    print(data)
+    return quickRet(data)
+
 
 # #查看邀約列表
 # match case 要python3.10才有 配合伺服器改用3.7 if elif
@@ -128,8 +136,8 @@ def getinviteList(m_id, mode):
     #                 if(accept_ids !=[]):
     #                     data = inviteModel.getacceptList(m_id,accept_ids)
     #                 # data = getaccept(m_id)
-    #                 return quickRet(data) 
-    #             except : 
+    #                 return quickRet(data)
+    #             except :
     #                 result = {"success": False, "mes": "查無資料"}
     #                 return ret(result)
     #         #不接受
@@ -139,7 +147,7 @@ def getinviteList(m_id, mode):
     #                 if(reject_ids !=[]):
     #                     data = inviteModel.getrejectList(reject_ids)
     #                 # data = getreject(m_id)
-    #                 return quickRet(data) 
+    #                 return quickRet(data)
     #             except:
     #                 result = {"success": False, "mes": "查無資料"}
     #                 return ret(result)
@@ -150,7 +158,7 @@ def getinviteList(m_id, mode):
     #                 if(unreply_ids !=[]):
     #                     data = inviteModel.getunreplyList(unreply_ids)
     #                 # data = getunreply(m_id)
-    #                 return quickRet(data) 
+    #                 return quickRet(data)
     #             except:
     #                 result = {"success": False, "mes": "查無資料"}
     #                 return ret(result)
@@ -168,7 +176,7 @@ def getinviteList(m_id, mode):
 
 
 def getaccept(m_id):
-    acceptID=inviteModel.getacceptID(m_id)
+    acceptID = inviteModel.getacceptID(m_id)
     accept_ids = []
     for i in acceptID:
         accept_ids.append(i["id"])
@@ -176,7 +184,8 @@ def getaccept(m_id):
     #     data = inviteModel.getacceptList(m_id,accept_ids)
     #     print(data)
     return accept_ids
-    
+
+
 def getreject(m_id):
     rejectID = inviteModel.getrejectID(m_id)
     reject_ids = []
@@ -186,7 +195,8 @@ def getreject(m_id):
     #     data = inviteModel.getrejectList(reject_ids)
     #     print(data)
     return reject_ids
-    
+
+
 def getunreply(m_id):
     unreplyID = inviteModel.getunreplyID(m_id)
     unreply_ids = []
@@ -196,29 +206,30 @@ def getunreply(m_id):
     #     data = inviteModel.getunreplyList(unreply_ids)
     return unreply_ids
 
-#查看邀約內容
-@inviteAPI.route("/<m_id>/<id>", methods=["GET"]) 
-def getinviteDetail(m_id,id):
+
+# 查看邀約內容
+@inviteAPI.route("/<m_id>/<id>", methods=["GET"])
+def getinviteDetail(m_id, id):
     try:
-        data = inviteModel.getinviteDetail(m_id,int(id))
+        data = inviteModel.getinviteDetail(m_id, int(id))
         return quickRet(data)
-    except: 
+    except:
         result = {"success": False, "mes": "查無資料"}
         return ret(result)
-    
-    
-#使用者回復邀約
-@inviteAPI.route("/<m_id>/<id>", methods=["POST"]) 
-def replyinvite(m_id,id):
+
+
+# 使用者回復邀約
+@inviteAPI.route("/<m_id>/<id>", methods=["POST"])
+def replyinvite(m_id, id):
     cond = ["accept"]
     check = checkParm(cond, request.json)
     result = {"success": False, "mes": ""}
-    if(isinstance(check, dict)):
+    if isinstance(check, dict):
         if type(check) == dict:
             try:
-                accept=check["accept"]
+                accept = check["accept"]
                 inviteModel.replyinvite(m_id, int(id), accept)
-                if(accept):
+                if accept:
                     result["mes"] = "已接受邀約"
                 else:
                     result["mes"] = "已拒絕邀約"
@@ -229,4 +240,3 @@ def replyinvite(m_id,id):
     else:
         result["mes"] = "資料傳遞錯誤"
         return ret(result)
-
