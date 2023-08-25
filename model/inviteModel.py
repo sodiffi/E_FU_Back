@@ -234,6 +234,7 @@ def invitelist(user_id, id):
                         "m_id": "$invite.m_id",
                         "remark": "$invite.remark",
                         "time": "$invite.time",
+                        "friend":"$invite.friend",
                     }
                 },
                 {

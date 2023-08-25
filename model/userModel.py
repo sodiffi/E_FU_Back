@@ -10,6 +10,8 @@ def login(id, password):
         )
     except:
         return "error"
+def changeProfile(id,data:dict):
+    return mongo.db.user.update_one({"id":id},{"$set":data})
 
 
 # def findPasswordByAccount(account, password):
