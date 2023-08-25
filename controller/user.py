@@ -65,9 +65,27 @@ def changeProfile():
             data[i] = content[i]
     data = userModel.changeProfile(data, account)
     result = {"success": False, "mes": "修改異常", "data": data}
+    
     if(data["success"]):
         result["success"] = True
         result["mes"] = "修改成功"
+    return ret(result)
+
+@userAPI.route("/target", methods=["PATCH"])
+def changetarget():
+    content = request.json
+    account = content["user_id"]
+    cond = ["target", "target_sets"]
+    data = checkParm(cond,content)
+    result = {"success": False, "mes": "修改異常", "data": data}
+    if type(data)==dict:
+        data = userModel.changeProfile(account, data)
+   
+    print(data)
+    if(data):
+        result["success"] = True
+        result["mes"] = "修改成功"
+        # result['data']=dat
     return ret(result)
 
 
