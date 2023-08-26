@@ -22,15 +22,15 @@ def addinvite(m_id):
             time = check["time"]
             remark = check["remark"]
             id = get_next_id("Invite")
-            print(id)
             inviteModel.addinvite(id, name, m_id, friend, time, remark)
             friend = []
             for i in check["friend"]:
                 friend.append(i)
             if friend != []:  # 加try 查看看mongo有沒有transaction
                 try:
+                    friend.append(m_id)
                     for i in range(0, len(friend)):
-                        inviteModel.addinvitedetail(id, friend[i])
+                        inviteModel.addinvitedetail(id, friend[i], m_id)
                     result["mes"] = "新增邀約成功"
                     result["success"] = True
                     return ret(result)
