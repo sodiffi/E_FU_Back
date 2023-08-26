@@ -211,10 +211,13 @@ def getinviteDetail(m_id, id):  # 邀約詳細資料
 
 
 def invitelist(user_id, id):
+    
     modePipline = {
         "user_id": user_id,
-        "accept": np.nan if id == 0 else (True if id == 1 else False),
+      
     }
+    if id!=0:
+        modePipline['accept']=  True  if id == 1 else (False if id == 2 else None),
     return list(
         mongo.db.Invite_detail.aggregate(
             [
