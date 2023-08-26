@@ -18,12 +18,12 @@ def addinvite(id, name, m_id, friend, time, remark):  # 新增邀約
     )
 
 
-def addinvitedetail(a_id, user_id):
+def addinvitedetail(a_id, user_id,m_id):
     return mongo.db.Invite_detail.insert_one(
         {
             "a_id": a_id,
             "user_id": user_id,
-            "accept": np.nan,
+            "accept": None if user_id != m_id else True,
             "done": {"sets_no": 0, "item_id": 0, "times": 0, "level": ""},
         }
     )
@@ -211,13 +211,12 @@ def getinviteDetail(m_id, id):  # 邀約詳細資料
 
 
 def invitelist(user_id, id):
-    
+    # 0全部; 1接受; 2不接受; 3未回應;
     modePipline = {
         "user_id": user_id,
-      
     }
     if id!=0:
-        modePipline['accept']=  True  if id == 1 else (False if id == 2 else None),
+        modePipline['accept']=  True  if id == 1 else (False if id == 2 else None)
     return list(
         mongo.db.Invite_detail.aggregate(
             [
