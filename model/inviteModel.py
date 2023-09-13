@@ -18,15 +18,8 @@ def addinvite(id, name, m_id, friend, time, remark):  # 新增邀約
     )
 
 
-def addinvitedetail(a_id, user_id,m_id):
-    return mongo.db.Invite_detail.insert_one(
-        {
-            "a_id": a_id,
-            "user_id": user_id,
-            "accept": None if user_id != m_id else True,
-            "done": {"sets_no": 0, "item_id": 0, "times": 0, "level": ""},
-        }
-    )
+def addinvitedetail(data):
+    return mongo.db.Invite_detail.insert_many(data)
 
 
 def editinvite(id, name, m_id, friend, time, remark):  # 修改邀約
