@@ -13,7 +13,7 @@ def add_plan(user_id):
 
     if isinstance(check, dict):
         try:
-            data=planModel.addPlan(check)
+            data=planModel.addPlan(check).acknowledged
             result["mes"]='新增成功'
             result["success"]=True
             result['data']=data
