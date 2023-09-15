@@ -4,13 +4,58 @@ from model.db import mongo
 from datetime import datetime, timedelta
 import numpy as np
 
-
-def getList(id):  # 新增邀約
+#歷史運動列表
+def getList(id,now_time):  
     return list(
-        mongo.db.history.aggregate(
+        mongo.db.Invite_detail.aggregate(
             [
-                {"$match": {"id": id}},
-                {"$project": {"_id": 0}},
+                {
+                    '$match': {
+                        'user_id': id, 
+                        'accept': True, 
+                        '$expr': {
+                            '$gt': [{'$size': '$done'}, 0]
+                        }
+                    }
+                }, {
+                    '$lookup': {
+                        'from': 'Invite', 
+                        'localField': 'i_id', 
+                        'foreignField': 'id', 
+                        'as': 'i_data'
+                    }
+                }, {
+                    '$unwind': '$i_data'
+                }, {
+                    '$addFields': {
+                        'i_name': '$i_data.name', 
+                        'time': '$i_data.time', 
+                        'm_id': '$i_data.m_id'
+                    }
+                }, {
+                    '$lookup': {
+                        'from': 'user', 
+                        'localField': 'm_id', 
+                        'foreignField': 'id', 
+                        'as': 'm_data'
+                    }
+                }, {
+                    '$unwind': '$m_data'
+                }, {
+                    '$addFields': {
+                        'm_name': '$m_data.name'
+                    }
+                }
+                , {
+                    '$unset': [
+                        '_id', 'i_data', 'm_data'
+                    ]
+                }
+                , {
+                    '$match': {
+                        'time': {'$lt': now_time}
+                    }
+                }
             ]
         )
     )
