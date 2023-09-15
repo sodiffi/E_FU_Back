@@ -25,7 +25,7 @@ def add_plan(user_id):
 
 
 @planAPI.route("/<user_id>", methods=["GET"])
-def add_plan(user_id):
+def get_plan(user_id):
     result = {"success": False, "mes": "查詢失敗"}
     try:
         data=planModel.getPlan(user_id)
@@ -36,19 +36,19 @@ def add_plan(user_id):
         result["mes"]="查詢異常"
 
 @planAPI.route("/<user_id>", methods=["PUT"])
-def add_plan(user_id):
+def edit_plan(user_id):
     cond = [ "name", "str_date", "end_date","execute"]
-    result = {"success": False, "mes": "新增失敗"}
+    result = {"success": False, "mes": "修改失敗"}
     check = checkParm(cond, request.json)
 
     if isinstance(check, dict):
         try:
             data=planModel.editPlan(check,user_id)
-            result["mes"]='新增成功'
+            result["mes"]='修改成功'
             result["success"]=True
             result['data']=data
         except:
-            result["mes"]="新增異常"
+            result["mes"]="修改異常"
     else:
         result['mes']=check
     return ret(result)
