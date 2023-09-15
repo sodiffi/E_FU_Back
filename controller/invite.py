@@ -31,7 +31,8 @@ def addinvite(m_id):
                     friend.append(m_id)
                     insert_data = []
                     for i in range(0, len(friend)):
-                        insert_data.append({"i_id": id,"user_id": friend[i],"accept": None if friend[i] != m_id else True,"done": {"sets_no": 0, "item_id": 0, "times": 0, "level": 0},})
+                        insert_data.append({"i_id": id,"user_id": friend[i],"accept": None if friend[i] != m_id else True,"done": []})
+                        # {"sets_no": 0, "item_id": 0, "times": 0, "level": 0}
                     inviteModel.addinvitedetail(insert_data)
                     result["mes"] = "新增邀約成功"
                     result["success"] = True
