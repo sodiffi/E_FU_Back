@@ -34,7 +34,7 @@ def get_plan(user_id):
         result['data']=data
     except:
         result["mes"]="查詢異常"
-    return result
+    return ret(result)
 
 @planAPI.route("/<user_id>", methods=["PUT"])
 def edit_plan(user_id):
