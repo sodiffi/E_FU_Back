@@ -31,3 +31,19 @@ def list(id):
         result["mes"] = "資料傳輸發生錯誤"
         result["code"] = 0
         return ret(result)
+
+@historyAPI.route("/<h_id>", methods=["GET"])
+def getHistory(h_id):
+    result = {"success": False}
+    try:
+        data = historyModel.getHistory(h_id)
+        print(data)
+        result["data"] = data
+        result["mes"] = "查詢成功"
+        result["code"] = 200
+        result["success"] = True
+        return ret(result)
+    except:
+        result["mes"] = "資料傳輸發生錯誤"
+        result["code"] = 0
+        return ret(result)
