@@ -217,7 +217,7 @@ def invitelist(user_id, id):
                 {
                     "$lookup": {
                         "from": "Invite",
-                        "localField": "a_id",
+                        "localField": "i_id",
                         "foreignField": "id",
                         "as": "invite",
                     }
