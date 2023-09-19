@@ -31,6 +31,7 @@ def getList(id):
                         "name": "$i_data.name",
                         "time": "$i_data.time",
                         "m_id": "$i_data.m_id",
+                        "friend":"$i_data.friend",
                     }
                 },
                 {
