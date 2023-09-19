@@ -13,8 +13,7 @@ historyAPI = Blueprint("history", __name__, url_prefix="/history")
 def list(id):
     result = {"success": False}
     try:
-        now_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        data = historyModel.getList(id,now_time)
+        data = historyModel.getList(id)
         
         # type_id_counts = {}
 
@@ -27,7 +26,8 @@ def list(id):
         result["code"] = 200
         result["success"] = True
         return ret(result)
-    except:
+    except Exception as e:
+        print(e)
         result["mes"] = "資料傳輸發生錯誤"
         result["code"] = 0
         return ret(result)

@@ -6,7 +6,7 @@ import numpy as np
 
 
 # 歷史運動列表
-def getList(id, now_time):
+def getList(id):
     return list(
         mongo.db.Invite_detail.aggregate(
             [
@@ -44,7 +44,7 @@ def getList(id, now_time):
                 {"$unwind": "$m_data"},
                 {"$addFields": {"m_name": "$m_data.name"}},
                 {"$unset": ["_id", "i_data", "m_data"]},
-                {"$match": {"time": {"$lt": now_time}}},
+                {"$match": {"time": {"$lte": datetime.now()}}},
             ]
         )
     )
