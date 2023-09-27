@@ -2,7 +2,7 @@ import json
 from model.util import group
 from model.db import mongo
 from datetime import datetime,timedelta
-
+import re 
 # name,gender,birth,height,weight
 
 def getmoFriend(friend_ids,hidden_ids):
@@ -44,3 +44,26 @@ def doHideFriend(user_id,hide_id):
 
 def doShowFriend(user_id,show_id):
     return mongo.db.user.update_one({"id": user_id}, {"$pull": { "hide_friend":show_id}})
+
+def search(keyword):
+    return list(mongo.db.user.aggregate(
+        [
+            {
+                '$match': {
+                    '$or': [
+                        {
+                            'id': re.compile(rf"{keyword}")
+                        }, {
+                            'name': re.compile(rf"{keyword}")
+                        }
+                    ]
+                }
+            }, {
+                '$project': {
+                    'name': 1, 
+                    'id': 1, 
+                    '_id': 0
+                }
+            }
+        ]
+    ))
