@@ -64,7 +64,7 @@ def doshow(user_id):
     check = checkParm(cond,request.json)
     if(isinstance(check, dict)):
         if type(check) == dict:
-            data=moModel.doShowFriend(
+            moModel.doShowFriend(
                 user_id,
                 check["id"]
             )
@@ -74,3 +74,11 @@ def doshow(user_id):
     else:
         return "error"
 
+@moProfile.route("/search/<keyword>",methods=["GET"])
+def search(keyword):
+    try:
+        data = moModel.search(keyword)
+        return quickRet(data)
+    except:
+        result = {"success":False,"mes":""}
+        return ret(result)
