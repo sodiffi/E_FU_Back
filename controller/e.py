@@ -65,14 +65,14 @@ def getAppointDetail():
 
 @eAPI.route('/appointment',methods=["POST"])
 def editAppoint():
-    cond=["a_id","done"]
+    cond=["i_id","done"]
     check=checkParm(cond,request.json)
     result = {
         "success": False,
     }
     if type(check)==dict:
         result["success"]=True
-        eModel.edit_appointment(check["a_id"],check['done'])
+        eModel.edit_appointment(check["i_id"],check['done'])
     else:
         result['msg']=check
     return ret(result)

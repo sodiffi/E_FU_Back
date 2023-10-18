@@ -15,6 +15,6 @@ def add_record():
     if request.is_json:
         data = request.get_json()
 
-        recordModel.record(data["a_id"], data["done"], data["raw"])
+        recordModel.record(data["i_id"], data["done"], data["raw"])
 
     return "ok"
