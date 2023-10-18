@@ -41,9 +41,12 @@ def add_record():
     #     # 驗證token_type是否為Bearer
     #     pass
     # return "test"
-    if request.is_json:
+    # if request.is_json:
+    #     data = request.get_json()
         data = request.get_json()
+    if request.is_json:
 
+    #     recordModel.record(data["a_id"], data["done"], data["raw"])
         recordModel.record(data["i_id"], data["done"], data["raw"])
 
-    return "ok"
+    # return "ok"
