@@ -34,7 +34,7 @@ def getacceptID(m_id):  # 已接受的邀約ID
         mongo.db.Invite_detail.aggregate(
             [
                 {"$match": {"user_id": m_id, "accept": True}},
-                {"$project": {"id": "$a_id", "_id": 0}},
+                {"$project": {"id": "$i_id", "_id": 0}},
             ]
         )
     )
@@ -68,7 +68,7 @@ def getrejectID(m_id):
         mongo.db.Invite_detail.aggregate(
             [
                 {"$match": {"user_id": m_id, "accept": False}},
-                {"$project": {"id": "$a_id", "_id": 0}},
+                {"$project": {"id": "$i_id", "_id": 0}},
             ]
         )
     )
@@ -92,7 +92,7 @@ def getunreplyID(m_id):
         mongo.db.Invite_detail.aggregate(
             [
                 {"$match": {"user_id": m_id, "accept": np.nan}},
-                {"$project": {"id": "$a_id", "_id": 0}},
+                {"$project": {"id": "$i_id", "_id": 0}},
             ]
         )
     )
@@ -252,9 +252,9 @@ def invitelist(user_id, accept):
     )
 
 
-def replyinvite(m_id, a_id, accept):
+def replyinvite(m_id, i_id, accept):
     return mongo.db.Invite_detail.update_one(
-        {"a_id": a_id, "user_id": m_id},
+        {"i_id": i_id, "user_id": m_id},
         {
             "$set": {
                 "accept": accept,
