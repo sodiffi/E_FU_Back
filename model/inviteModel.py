@@ -203,13 +203,13 @@ def getinviteDetail(m_id, id):  # 邀約詳細資料
     return list(mongo.db.Invite.find({"m_id": m_id, "id": id}, {"_id": 0}))
 
 
-def invitelist(user_id, id):
+def invitelist(user_id, accept):
     # 0全部; 1接受; 2不接受; 3未回應;
     modePipline = {
         "user_id": user_id,
     }
-    if id!=0:
-        modePipline['accept']=  True  if id == 1 else (False if id == 2 else None)
+    if accept!=0:
+        modePipline['accept']=  accept
     return list(
         mongo.db.Invite_detail.aggregate(
             [
