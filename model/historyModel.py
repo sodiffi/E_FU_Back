@@ -83,7 +83,7 @@ def getHistory(h_id):
                 },
                 {"$unwind": "$i_data"},
                 {"$addFields": {"name": "$i_data.m_id"}},
-                {"$unset": ["_id", "i_data", "m_data", "i_data"]},
+                {"$unset": ["_id", "i_data", "m_data", ]},
             ]
             # {"i_id": int(h_id)}, {"_id": 0}
         )
