@@ -26,12 +26,19 @@ def addinvite(m_id):
             friend = []
             for i in check["friend"]:
                 friend.append(i)
-            if friend != []:  
+            if friend != []:
                 try:
                     friend.append(m_id)
                     insert_data = []
                     for i in range(0, len(friend)):
-                        insert_data.append({"i_id": id,"user_id": friend[i],"accept": 3 if friend[i] != m_id else 1,"done": []})
+                        insert_data.append(
+                            {
+                                "i_id": id,
+                                "user_id": friend[i],
+                                "accept": 3 if friend[i] != m_id else 1,
+                                "done": [],
+                            }
+                        )
                         # {"sets_no": 0, "item_id": 0, "times": 0, "level": 0}
                     inviteModel.addinvitedetail(insert_data)
                     result["mes"] = "新增邀約成功"
@@ -214,7 +221,7 @@ def getunreply(m_id):
 @inviteAPI.route("/<m_id>/<id>", methods=["GET"])
 def getinviteDetail(m_id, id):
     try:
-        data = inviteModel.getinviteDetail(m_id, int(id))
+        data = inviteModel.getinviteDetail(int(id))
         return quickRet(data)
     except:
         result = {"success": False, "mes": "查無資料"}
