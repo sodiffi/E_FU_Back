@@ -29,178 +29,31 @@ def editinvite(id, name, m_id, friend, time, remark):  # 修改邀約
     )
 
 
-def getacceptID(m_id):  # 已接受的邀約ID
+def getinviteDetail( i_id):  # 邀約詳細資料
     return list(
         mongo.db.Invite_detail.aggregate(
             [
-                {"$match": {"user_id": m_id, "accept": True}},
-                {"$project": {"id": "$i_id", "_id": 0}},
-            ]
-        )
-    )
-
-
-# 邀約列表 - 接受
-def getacceptList(m_id, acceptList):
-    return list(
-        mongo.db.Invite.aggregate(
-            [
-                {"$match": {"m_id": m_id}},
-                {"$project": {"id": 1, "name": 1, "time": 1, "_id": 0}},
+                {"$match": {"i_id": i_id}},
                 {
-                    "$unionWith": {
-                        "coll": "Invite",
-                        "pipeline": [
-                            {"$match": {"id": {"$in": acceptList}}},
-                            {"$project": {"id": 1, "name": 1, "time": 1, "_id": 0}},
-                        ],
+                    "$lookup": {
+                        "from": "user",
+                        "localField": "user_id",
+                        "foreignField": "id",
+                        "as": "result",
                     }
                 },
-                {"$sort": {"time": 1}},
-            ]
-        )
-    )
-
-
-# 邀約列表 - 拒絕
-def getrejectID(m_id):
-    return list(
-        mongo.db.Invite_detail.aggregate(
-            [
-                {"$match": {"user_id": m_id, "accept": False}},
-                {"$project": {"id": "$i_id", "_id": 0}},
-            ]
-        )
-    )
-
-
-def getrejectList(rejectList):
-    return list(
-        mongo.db.Invite.aggregate(
-            [
-                {"$match": {"id": {"$in": rejectList}}},
-                {"$project": {"id": 1, "name": 1, "time": 1, "_id": 0}},
-                {"$sort": {"time": 1}},
-            ]
-        )
-    )
-
-
-# 邀約列表 - 未回應
-def getunreplyID(m_id):
-    return list(
-        mongo.db.Invite_detail.aggregate(
-            [
-                {"$match": {"user_id": m_id, "accept": np.nan}},
-                {"$project": {"id": "$i_id", "_id": 0}},
-            ]
-        )
-    )
-
-
-def getunreplyList(unreplyList):
-    return list(
-        mongo.db.Invite.aggregate(
-            [
-                {"$match": {"id": {"$in": unreplyList}}},
-                {"$project": {"id": 1, "name": 1, "time": 1, "_id": 0}},
-                {"$sort": {"time": 1}},
-            ]
-        )
-    )
-
-
-# 邀約列表 - 全部
-def getinviteList(m_id, acceptList, rejectList, unreplyList):
-    return list(
-        mongo.db.Invite.aggregate(
-            [
-                {"$match": {"m_id": m_id}},
-                {"$project": {"id": 1, "name": 1, "time": 1, "_id": 0}},
+                {"$unwind": {"path": "$result"}},
                 {
-                    "$unionWith": {
-                        "coll": "Invite",
-                        "pipeline": [
-                            {"$match": {"id": {"$in": acceptList}}},
-                            {
-                                "$project": {
-                                    "id": 1,
-                                    "name": 1,
-                                    "time": 1,
-                                    "_id": 0,
-                                }
-                            },
-                        ],
+                    "$addFields": {
+                        "userName": "$result.name",
+                        "targetSets": "$result.target_sets",
                     }
-                },
-                {
-                    "$unionWith": {
-                        "coll": "Invite",
-                        "pipeline": [
-                            {"$match": {"id": {"$in": rejectList}}},
-                            {
-                                "$project": {
-                                    "id": 1,
-                                    "name": 1,
-                                    "time": 1,
-                                    "_id": 0,
-                                }
-                            },
-                        ],
-                    }
-                },
-                {
-                    "$unionWith": {
-                        "coll": "Invite",
-                        "pipeline": [
-                            {"$match": {"id": {"$in": unreplyList}}},
-                            {
-                                "$project": {
-                                    "id": 1,
-                                    "name": 1,
-                                    "time": 1,
-                                    "_id": 0,
-                                }
-                            },
-                        ],
-                    }
-                },
-                {"$sort": {"time": 1}},
+                },{
+                    "$unset":["result","_id"]
+                }
             ]
         )
     )
-    # return list(mongo.db.Invite.aggregate(
-    #         [
-    #             {
-    #                 '$match': {
-    #                     'm_id': m_id
-    #                 }
-    #             }, {
-    #                 '$project': {
-    #                     'id': 1, 'name': 1, 'time': 1, '_id': 0
-    #                 }
-    #             }, {
-    #                 '$unionWith': {
-    #                     'coll': 'Invite',
-    #                     'pipeline': [
-    #                         {
-    #                             '$match': {
-    #                                 'id': {'$in': acceptList}
-    #                             }
-    #                         }, {
-    #                             '$project': {
-    #                                 'id': 1, 'name': 1, 'time': 1, '_id': 0
-    #                             }
-    #                         }
-    #                     ]
-    #                 }
-    #             }
-    #         ]
-    #     ))
-
-
-def getinviteDetail(m_id, id):  # 邀約詳細資料
-    return list(mongo.db.Invite.find({"m_id": m_id, "id": id}, {"_id": 0}))
 
 
 def invitelist(user_id, accept):
@@ -208,8 +61,8 @@ def invitelist(user_id, accept):
     modePipline = {
         "user_id": user_id,
     }
-    if accept!=0:
-        modePipline['accept']=  accept
+    if accept != 0:
+        modePipline["accept"] = accept
     return list(
         mongo.db.Invite_detail.aggregate(
             [
@@ -229,7 +82,7 @@ def invitelist(user_id, accept):
                         "m_id": "$invite.m_id",
                         "remark": "$invite.remark",
                         "time": "$invite.time",
-                        "friend":"$invite.friend",
+                        "friend": "$invite.friend",
                     }
                 },
                 {
@@ -246,7 +99,7 @@ def invitelist(user_id, accept):
                     }
                 },
                 {"$addFields": {"m_name": "$user.name"}},
-                {"$unset":["user","invite","_id"]}
+                {"$unset": ["user", "invite", "_id"]},
             ]
         )
     )
@@ -261,7 +114,3 @@ def replyinvite(m_id, i_id, accept):
             }
         },
     )
-
-
-# def reject():
-#     return ''
