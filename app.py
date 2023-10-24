@@ -2,7 +2,7 @@
 from flask import Flask,request,make_response,jsonify
 from itsdangerous import TimedJSONWebSignatureSerializer as TJSS
 import json
-from controller import(user,record,people,e,work,mo,invite,history,plan)
+from controller import(user,record,people,e,work,mo,invite,history,plan,home)
 from model.db import mongo
 from controller.util import checkParm, ret
 from model import (userModel)
@@ -14,6 +14,7 @@ app.config["MONGO_URI"] = "mongodb+srv://numbone112:i3PO8xrZj1KRwz83@cluster0.5r
 mongo.init_app(app) # initialize here!
 print(type(mongo))
 print((mongo.db.name))
+app.register_blueprint(home.homeAPI)
 app.register_blueprint(user.userAPI)
 app.register_blueprint(people.peopleProfile)
 app.register_blueprint(record.recordAPI)
@@ -31,7 +32,7 @@ def line():
 
 
 @app.route('/get', methods=["GET","OPTIONS"])
-def home():
+def test():
     return 'good from backend'
 
 @app.route("/login", methods=["POST"])
