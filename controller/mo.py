@@ -1,5 +1,6 @@
 from flask import Blueprint, request,Response
 from model import moModel
+from model.historyModel import getList
 from .util import checkParm, ret, quickRet
 from model.db import mongo
 
@@ -82,3 +83,25 @@ def search(keyword):
     except:
         result = {"success":False,"mes":""}
         return ret(result)
+    
+@moProfile.route("/rank/<user_id>",methods=["GET"])
+def rank(user_id):
+    try:
+        data = moModel.rank(user_id)
+        return quickRet(data)
+    except Exception as e:
+        result = {"success":False,"mes":""}
+        print(e)
+        return ret(result)
+    
+@moProfile.route("detail/<user_id>/<friend_id>",methods=["GET"])
+def detail(user_id,friend_id):
+    try:
+        data=getList(user_id,friend_id=friend_id)
+        return quickRet(data)
+    except Exception as e:
+        result = {"success":False,"mes":""}
+        print(e)
+        return ret(result)
+    
+        
