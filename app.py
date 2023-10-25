@@ -24,6 +24,7 @@ app.register_blueprint(mo.moProfile)
 app.register_blueprint(invite.inviteAPI)
 app.register_blueprint(history.historyAPI)
 app.register_blueprint(plan.planAPI)
+app.register_blueprint(home.homeAPI)
 
 
 @app.route('/', methods=["POST"])
