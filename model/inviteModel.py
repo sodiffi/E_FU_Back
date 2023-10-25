@@ -114,3 +114,6 @@ def replyinvite(m_id, i_id, accept):
             }
         },
     )
+
+def searchInvite(m_id,time):
+    return list(mongo.db.Invite.find({"m_id":m_id,"time":time},{"_id":0}))

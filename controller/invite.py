@@ -250,3 +250,13 @@ def replyinvite(m_id, id):
     else:
         result["mes"] = "資料傳遞錯誤"
         return ret(result)
+
+
+@inviteAPI.route("/search/<m_id>/<time>", methods=["GET"])
+def searchInvite(m_id, time):
+    result = {"success": False, "mes": ""}
+    try:
+        data = inviteModel.searchInvite(m_id, time)
+        return quickRet(data)
+    except:
+        return ret(result)

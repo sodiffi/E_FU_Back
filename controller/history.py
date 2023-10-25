@@ -12,15 +12,10 @@ historyAPI = Blueprint("history", __name__, url_prefix="/history")
 @historyAPI.route("/list/<id>", methods=["GET"])
 def list(id):
     result = {"success": False}
+    i_id = request.args.get('i_id')
+
     try:
-        data = historyModel.getList(id)
-        
-        # type_id_counts = {}
-
-        # for item in data['done']:
-        #     type_id = item['type_id']
-        #     type_id_counts[type_id] = type_id_counts.get(type_id, 0) + 1
-
+        data = historyModel.getList(id,i_id=i_id)
         result["data"] = data
         result["mes"] = "查詢成功"
         result["code"] = 200
@@ -31,6 +26,7 @@ def list(id):
         result["mes"] = "資料傳輸發生錯誤"
         result["code"] = 0
         return ret(result)
+    
 
 @historyAPI.route("/<h_id>", methods=["GET"])
 def getHistory(h_id):
@@ -43,7 +39,9 @@ def getHistory(h_id):
         result["code"] = 200
         result["success"] = True
         return ret(result)
-    except:
+    except Exception as err:
+        print(f"Unexpected {err=}, {type(err)=}")
+
         result["mes"] = "資料傳輸發生錯誤"
         result["code"] = 0
         return ret(result)

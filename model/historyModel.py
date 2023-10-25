@@ -6,15 +6,17 @@ import numpy as np
 
 
 # 歷史運動列表
-def getList(id, friend_id=""):
-    pipline = [
-        {
+def getList(id, friend_id="",i_id=""):
+    match= {
             "$match": {
                 "user_id": id,
                 "accept": True,
                 "$expr": {"$gt": [{"$size": "$done"}, 0]},
             }
-        },
+        }
+    if(i_id!=""):match["$match"]["i_id"]=i_id
+    pipline = [
+       
         {
             "$lookup": {
                 "from": "Invite",
