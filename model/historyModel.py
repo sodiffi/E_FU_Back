@@ -16,7 +16,7 @@ def getList(id, friend_id="",i_id=""):
         }
     if(i_id!=""):match["$match"]["i_id"]=i_id
     pipline = [
-       
+       match,
         {
             "$lookup": {
                 "from": "Invite",
