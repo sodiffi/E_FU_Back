@@ -16,8 +16,8 @@ def record(detail,rawdata):
                     'score': detail["score"]
                 }
             }
-        )
-        # "raw": mongo.db.record.insert_many(rawdata)
+        ),
+        "raw": mongo.db.record.insert_many(rawdata)
     }
 
 # def record(a_id,done,target):
