@@ -40,7 +40,7 @@ def getHistory(h_id):
         result["success"] = True
         return ret(result)
     except Exception as err:
-        print(f"Unexpected {err=}, {type(err)=}")
+        print(f"Unexpected {err}, {type(err)}")
 
         result["mes"] = "資料傳輸發生錯誤"
         result["code"] = 0
