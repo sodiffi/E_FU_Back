@@ -18,8 +18,7 @@ def getHome(user_id):
             print(type(d))
             score[d["type_id"]] = score[d["type_id"] - 1] + int(d["level"])
             count[d["type_id"]] = count[d["type_id"] - 1] + 1
-    #     print(score,count)
-    print(score, count)
+    
     for i in range(1, len(score)):
         if count[i] != 0:
             score[i] = score[i] / count[i]
@@ -38,18 +37,11 @@ def getHome(user_id):
     sportsday = list(
         mongo.db.invite_list.find({"time": {"$gte": start_of_week, "$lt": end_of_week}})
     )
-    print(
-        "user_id ", f"'{user_id}'", list(mongo.db.plan.find({"user_id": f"{user_id}"}))
-    )
+   
     # 有哪些天要運動
     # 需增加判斷是否沒有計畫，陣列為空
     weekdays = list(
-        mongo.db.plan.find(
-            {
-                "user_id": f"{user_id}",
-            },
-            {"_id": 0},
-        )
+       list(mongo.db.plan.find({"user_id": f"{user_id}"},{"_id":0}))
     )
     done_plan_list = []
     if len(weekdays) != 0:
