@@ -2,17 +2,23 @@ import json
 from model.util import group
 from model.db import mongo
 from datetime import datetime, timedelta
+import bson
 import numpy as np
 
 
+
+
+
 def addinvite(id, name, m_id, friend, time, remark):  # 新增邀約
+    time_obj = datetime.strptime(time, "%Y-%m-%d T%H:%M:%S")
+    # print(bson.Timestamp(time_obj, 1))
     return mongo.db.Invite.insert_one(
         {
             "id": id,
             "name": name,
             "m_id": m_id,
             "friend": friend,
-            "time": time,
+            "time": time_obj,
             "remark": remark,
         }
     )
