@@ -13,6 +13,7 @@ def add_record():
     if isinstance(check, dict):
         try:
             recordModel.record(check["detail"][0],check["record"])
+            result["mes"]="新增成功"
         except:
             result["mes"]="新增異常"
     else:
