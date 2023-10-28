@@ -1,5 +1,5 @@
 import json
-from model.util import group
+from model.util import group,timeFormat
 from model.db import mongo
 from datetime import datetime, timedelta
 import bson
@@ -10,7 +10,7 @@ import numpy as np
 
 
 def addinvite(id, name, m_id, friend, time, remark):  # 新增邀約
-    time_obj = datetime.strptime(time, "%Y-%m-%d T%H:%M:%S")
+    
     # print(bson.Timestamp(time_obj, 1))
     return mongo.db.Invite.insert_one(
         {
@@ -18,7 +18,7 @@ def addinvite(id, name, m_id, friend, time, remark):  # 新增邀約
             "name": name,
             "m_id": m_id,
             "friend": friend,
-            "time": time_obj,
+            "time": timeFormat(time),
             "remark": remark,
         }
     )
@@ -31,7 +31,7 @@ def addinvitedetail(data):
 def editinvite(id, name, m_id, friend, time, remark):  # 修改邀約
     return mongo.db.Invite.update_one(
         {"id": id, "m_id": m_id},
-        {"$set": {"name": name, "friend": friend, "time": time, "remark": remark}},
+        {"$set": {"name": name, "friend": friend, "time": timeFormat(time), "remark": remark}},
     )
 
 
@@ -122,4 +122,4 @@ def replyinvite(m_id, i_id, accept):
     )
 
 def searchInvite(m_id,time):
-    return list(mongo.db.Invite.find({"m_id":m_id,"time":time},{"_id":0}))
+    return list(mongo.db.Invite.find({"m_id":m_id,"time": timeFormat(time)},{"_id":0}))
