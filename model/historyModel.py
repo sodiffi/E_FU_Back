@@ -10,11 +10,12 @@ def getList(id, friend_id="",i_id=""):
     match= {
             "$match": {
                 "user_id": id,
-                "accept": True,
-                "$expr": {"$gt": [{"$size": "$done"}, 0]},
+                "accept": 1,
             }
         }
-    if(i_id!=""):match["$match"]["i_id"]=i_id
+    if(i_id!=""):match["$match"]["i_id"]=int(i_id)
+    else:match["$match"]["$expr"]={"$gt": [{"$size": "$done"}, 0]},
+    print(match)
     pipline = [
        match,
         {
