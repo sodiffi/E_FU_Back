@@ -9,8 +9,17 @@ recordAPI = Blueprint("record", __name__, url_prefix="/record")
 def add_record():
     cond = ["record","detail"]
     check = checkParm(cond, request.json)
-    recordModel.record(check["detail"][0],check["record"])
-    return "OK"
+    result = {"success": False, "mes": "新增失敗"}
+    if isinstance(check, dict):
+        try:
+            recordModel.record(check["detail"][0],check["record"])
+        except:
+            result["mes"]="新增異常"
+    else:
+        result['mes']=check
+    return ret(result)
+    
+    return 
 
 
 
