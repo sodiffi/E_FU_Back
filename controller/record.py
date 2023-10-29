@@ -12,10 +12,16 @@ def add_record():
     
     result = {"success": False, "mes": "新增失敗"}
     if isinstance(check, dict):
-        check2=checkParm(["user_id","i_id","score",'done'],check["detail"])
-        print(check2)
+        done = []
+        score = []
+        for i in check["detail"]:
+            check2=checkParm(["user_id","i_id","score",'done'],i)
+            if isinstance(check2, dict):
+                i_id = check2["i_id"]
+                done.append( {'case': {'$eq': ['$user_id', check2["user_id"]]}, 'then': check2["done"]})
+                score.append( {'case': {'$eq': ['$user_id', check2["user_id"]]}, 'then': check2["score"]})
         try:
-            recordModel.record(check["detail"][0],check["record"])
+            recordModel.record(done,score,check["record"],i_id)
             result["mes"]="新增成功"
             result["success"]=True
         except:
@@ -23,8 +29,6 @@ def add_record():
     else:
         result['mes']=check
     return ret(result)
-    
-    return 
 
 
 
