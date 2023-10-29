@@ -1,16 +1,12 @@
 import json
-from model.util import group,timeFormat
+from model.util import group, timeFormat, timeformatString
 from model.db import mongo
 from datetime import datetime, timedelta
 import bson
 import numpy as np
 
 
-
-
-
 def addinvite(id, name, m_id, friend, time, remark):  # 新增邀約
-    
     # print(bson.Timestamp(time_obj, 1))
     return mongo.db.Invite.insert_one(
         {
@@ -31,11 +27,18 @@ def addinvitedetail(data):
 def editinvite(id, name, m_id, friend, time, remark):  # 修改邀約
     return mongo.db.Invite.update_one(
         {"id": id, "m_id": m_id},
-        {"$set": {"name": name, "friend": friend, "time": timeFormat(time), "remark": remark}},
+        {
+            "$set": {
+                "name": name,
+                "friend": friend,
+                "time": timeFormat(time),
+                "remark": remark,
+            }
+        },
     )
 
 
-def getinviteDetail( i_id):  # 邀約詳細資料
+def getinviteDetail(i_id):  # 邀約詳細資料
     return list(
         mongo.db.Invite_detail.aggregate(
             [
@@ -54,9 +57,8 @@ def getinviteDetail( i_id):  # 邀約詳細資料
                         "userName": "$result.name",
                         "targetSets": "$result.target_sets",
                     }
-                },{
-                    "$unset":["result","_id"]
-                }
+                },
+                {"$unset": ["result", "_id"]},
             ]
         )
     )
@@ -106,6 +108,17 @@ def invitelist(user_id, accept):
                 },
                 {"$addFields": {"m_name": "$user.name"}},
                 {"$unset": ["user", "invite", "_id"]},
+                {"$sort": {"time": -1}},
+                {
+                    "$addFields": {
+                        "time": {
+                            "$dateToString": {
+                                "format": timeformatString,
+                                "date": "$time",
+                            }
+                        }
+                    }
+                },
             ]
         )
     )
@@ -121,5 +134,8 @@ def replyinvite(m_id, i_id, accept):
         },
     )
 
-def searchInvite(m_id,time):
-    return list(mongo.db.Invite.find({"m_id":m_id,"time": timeFormat(time)},{"_id":0}))
+
+def searchInvite(m_id, time):
+    return list(
+        mongo.db.Invite.find({"m_id": m_id, "time": timeFormat(time)}, {"_id": 0})
+    )

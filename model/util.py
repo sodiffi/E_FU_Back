@@ -4,8 +4,9 @@ from coder import MyEncoder
 from datetime import datetime, timedelta
 
 
+timeformatString="%Y-%m-%d T%H:%M:%S"
 def timeFormat(time):
-     return datetime.strptime(time, "%Y-%m-%d T%H:%M:%S")
+     return datetime.strptime(time, timeformatString)
 
 
 def group(data: dict, tag: list, identity: str):
