@@ -28,7 +28,7 @@ def addinvite(m_id):
                 friend.append(i)
             if friend != []:
                 try:
-                    friend.append(m_id)
+                    
                     insert_data = []
                     for i in range(0, len(friend)):
                         insert_data.append(
@@ -87,135 +87,6 @@ def inviteList(user_id, mode):
     return quickRet(data)
 
 
-# #查看邀約列表
-# match case 要python3.10才有 配合伺服器改用3.7 if elif
-@inviteAPI.route("/list/<m_id>/<int:mode>", methods=["GET"])
-def getinviteList(m_id, mode):
-    if mode == 1:
-        try:
-            accept_ids = getaccept(m_id)
-            if accept_ids:
-                data = inviteModel.getacceptList(m_id, accept_ids)
-                return quickRet(data)
-            else:
-                result = {"success": False, "mes": "查無資料"}
-                return ret(result)
-        except:
-            result = {"success": False, "mes": "查無資料"}
-            return ret(result)
-    elif mode == 2:
-        try:
-            reject_ids = getreject(m_id)
-            if reject_ids:
-                data = inviteModel.getrejectList(reject_ids)
-                return quickRet(data)
-            else:
-                result = {"success": False, "mes": "查無資料"}
-                return ret(result)
-        except:
-            result = {"success": False, "mes": "查無資料"}
-            return ret(result)
-    elif mode == 3:
-        try:
-            unreply_ids = getunreply(m_id)
-            if unreply_ids:
-                data = inviteModel.getunreplyList(unreply_ids)
-                return quickRet(data)
-            else:
-                result = {"success": False, "mes": "查無資料"}
-                return ret(result)
-        except:
-            result = {"success": False, "mes": "查無資料"}
-            return ret(result)
-    else:
-        accept = getaccept(m_id)
-        reject = getreject(m_id)
-        unreply = getunreply(m_id)
-        print(accept)
-        print(reject)
-        print(unreply)
-        data = inviteModel.getinviteList(m_id, accept, reject, unreply)
-        return quickRet(data)
-    # @inviteAPI.route("/list/<m_id>/<int:mode>", methods=["GET"])
-    # def getinviteList(m_id,mode):
-    #     match(mode):
-    #         #接受、跟他主辦的
-    #         case 1:
-    #             try:
-    #                 accept_ids = getaccept(m_id)
-    #                 if(accept_ids !=[]):
-    #                     data = inviteModel.getacceptList(m_id,accept_ids)
-    #                 # data = getaccept(m_id)
-    #                 return quickRet(data)
-    #             except :
-    #                 result = {"success": False, "mes": "查無資料"}
-    #                 return ret(result)
-    #         #不接受
-    #         case 2:
-    #             try:
-    #                 reject_ids = getreject(m_id)
-    #                 if(reject_ids !=[]):
-    #                     data = inviteModel.getrejectList(reject_ids)
-    #                 # data = getreject(m_id)
-    #                 return quickRet(data)
-    #             except:
-    #                 result = {"success": False, "mes": "查無資料"}
-    #                 return ret(result)
-    #         #未回覆
-    #         case 3:
-    #             try:
-    #                 unreply_ids = getunreply(m_id)
-    #                 if(unreply_ids !=[]):
-    #                     data = inviteModel.getunreplyList(unreply_ids)
-    #                 # data = getunreply(m_id)
-    #                 return quickRet(data)
-    #             except:
-    #                 result = {"success": False, "mes": "查無資料"}
-    #                 return ret(result)
-    #         #全部
-    #         case _:
-    #             accept = getaccept(m_id)
-    #             reject = getreject(m_id)
-    #             unreply = getunreply(m_id)
-    #             print(accept)
-    #             print(reject)
-    #             print(unreply)
-    #             data = inviteModel.getinviteList(m_id,accept,reject,unreply)
-    #             # data={"accept":accept,"reject":reject,"unreply":unreply}
-    #             return quickRet(data)
-
-
-def getaccept(m_id):
-    acceptID = inviteModel.getacceptID(m_id)
-    accept_ids = []
-    for i in acceptID:
-        accept_ids.append(i["id"])
-    # if(accept_ids !=[]):
-    #     data = inviteModel.getacceptList(m_id,accept_ids)
-    #     print(data)
-    return accept_ids
-
-
-def getreject(m_id):
-    rejectID = inviteModel.getrejectID(m_id)
-    reject_ids = []
-    for i in rejectID:
-        reject_ids.append(i["id"])
-    # if(reject_ids !=[]):
-    #     data = inviteModel.getrejectList(reject_ids)
-    #     print(data)
-    return reject_ids
-
-
-def getunreply(m_id):
-    unreplyID = inviteModel.getunreplyID(m_id)
-    unreply_ids = []
-    for i in unreplyID:
-        unreply_ids.append(i["id"])
-    # if(unreply_ids !=[]):
-    #     data = inviteModel.getunreplyList(unreply_ids)
-    return unreply_ids
-
 
 # 查看邀約內容
 @inviteAPI.route("/<m_id>/<id>", methods=["GET"])
@@ -239,9 +110,9 @@ def replyinvite(m_id, id):
             try:
                 accept = check["accept"]
                 inviteModel.replyinvite(m_id, int(id), accept)
-                if accept:
+                if accept==1:
                     result["mes"] = "已接受邀約"
-                else:
+                elif accept==2:
                     result["mes"] = "已拒絕邀約"
                 result["success"] = True
                 return ret(result)
