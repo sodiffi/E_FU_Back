@@ -66,9 +66,9 @@ def getHome(user_id):
         [
             {
                 "$match": {
-                    "user_id": user_id,
+                    "user_id": f"{user_id}",
                     "accept": 1,
-                    "$expr": {"$gt": [{"$size": "$done"}, 0]},
+                    "$expr": {"$lte": [{"$size": "$done"}, 0]},
                 },
             },
             {
@@ -117,7 +117,9 @@ def getHome(user_id):
             },
             {"$limit": 5},
         ])
+        
     )
+    print(execute)
     
 
     return {"avg_score": score, "done_plan": done_plan_list,"execute":execute}
