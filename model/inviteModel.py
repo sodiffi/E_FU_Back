@@ -69,7 +69,7 @@ def invitelist(user_id, accept):
     modePipline = {
         "user_id": user_id,
         "$expr":{
-            "$lt":[{"$size": "$done"}, 0]
+            "$lte":[{"$size": "$done"}, 0]
         }
     }
     if accept != 0:
