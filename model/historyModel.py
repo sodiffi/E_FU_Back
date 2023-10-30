@@ -6,19 +6,20 @@ import numpy as np
 
 
 # 歷史運動列表
-def getList(id, friend_id="",i_id=""):
-    match= {
-            "$match": {
-                "user_id": id,
-                "accept": 1,
-            }
+def getList(id, friend_id="", i_id=""):
+    match = {
+        "$match": {
+            "user_id": id,
+            "accept": 1,
         }
-    print(i_id)
-    if(i_id!=None and i_id!=""):match["$match"]["i_id"]=int(i_id)
-    else:match["$match"]["$expr"]={"$gt": [{"$size": "$done"}, 0]},
-    print(match)
+    }
+    if i_id != None and i_id != "":
+        match["$match"]["i_id"] = int(i_id)
+    else:
+        match["$match"]["$expr"] = ({"$gt": [{"$size": "$done"}, 0]},)
+
     pipline = [
-       match,
+        match,
         {
             "$lookup": {
                 "from": "Invite",
@@ -62,12 +63,7 @@ def getHistory(h_id):
     return list(
         mongo.db.Invite_detail.aggregate(
             [
-                {
-                    "$match": {
-                        "i_id": int(h_id),
-                        "accept":1
-                    }
-                },
+                {"$match": {"i_id": int(h_id), "accept": 1}},
                 {
                     "$lookup": {
                         "from": "user",
