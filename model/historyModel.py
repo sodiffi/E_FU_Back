@@ -13,7 +13,8 @@ def getList(id, friend_id="",i_id=""):
                 "accept": 1,
             }
         }
-    if(i_id!=""):match["$match"]["i_id"]=int(i_id)
+    print(i_id)
+    if(i_id!=None and i_id!=""):match["$match"]["i_id"]=int(i_id)
     else:match["$match"]["$expr"]={"$gt": [{"$size": "$done"}, 0]},
     print(match)
     pipline = [
@@ -49,6 +50,7 @@ def getList(id, friend_id="",i_id=""):
         {"$addFields": {"m_name": "$m_data.name"}},
         {"$unset": ["_id", "i_data", "m_data", "user_id", "accept"]},
         {"$match": {"time": {"$lte": datetime.now()}}},
+        {"$sort": {"time": -1}},
     ]
     if friend_id != "":
         pipline.append({"$match": {"friend": {"$in": [friend_id]}}})
@@ -63,6 +65,7 @@ def getHistory(h_id):
                 {
                     "$match": {
                         "i_id": int(h_id),
+                        "accept":1
                     }
                 },
                 {
@@ -84,7 +87,7 @@ def getHistory(h_id):
                     },
                 },
                 {"$unwind": "$i_data"},
-                {"$addFields": {"name": "$i_data.m_id"}},
+                # {"$addFields": {"name": "$i_data.m_id"}},
                 {
                     "$unset": [
                         "_id",
