@@ -1,5 +1,5 @@
 import json
-from model.util import group
+from model.util import group, timeformatString
 from model.db import mongo
 from datetime import datetime, timedelta
 import numpy as np
@@ -18,7 +18,7 @@ def getHome(user_id):
             print(type(d))
             score[d["type_id"]] = score[d["type_id"] - 1] + int(d["level"])
             count[d["type_id"]] = count[d["type_id"] - 1] + 1
-    
+
     for i in range(1, len(score)):
         if count[i] != 0:
             score[i] = score[i] / count[i]
@@ -37,13 +37,13 @@ def getHome(user_id):
     sportsday = list(
         mongo.db.invite_list.find({"time": {"$gte": start_of_week, "$lt": end_of_week}})
     )
-   
+
     # 有哪些天要運動
     # 需增加判斷是否沒有計畫，陣列為空
-    weekdays = list(
-       list(mongo.db.plan.find({"user_id": f"{user_id}"},{"_id":0}))
-    )
+    weekdays = list(list(mongo.db.plan.find({"user_id": f"{user_id}"}, {"_id": 0})))
     done_plan_list = []
+    print(weekdays)
+
     if len(weekdays) != 0:
         for i in range(7):
             # 0 無計畫也無運動
@@ -52,7 +52,7 @@ def getHome(user_id):
             done_plan = 0
             day = start_of_week + timedelta(days=i)
 
-            if weekdays[i]:
+            if weekdays[0]["execute"][i]:
                 if any(e for e in sportsday if day in e["time"]):
                     done_plan = 1
                 else:
@@ -62,5 +62,62 @@ def getHome(user_id):
     else:
         done_plan_list = [0, 0, 0, 0, 0, 0, 0]
     # 運動日程(待補，查詢invite list之後，篩選未來的資料五筆給運動日程)
+    execute = list(mongo.db.Invite_detail.aggregate(
+        [
+            {
+                "$match": {
+                    "user_id": user_id,
+                    "accept": 1,
+                    "$expr": {"$gt": [{"$size": "$done"}, 0]},
+                },
+            },
+            {
+                "$lookup": {
+                    "from": "Invite",
+                    "localField": "i_id",
+                    "foreignField": "id",
+                    "as": "invite",
+                }
+            },
+            {"$unwind": {"path": "$invite"}},
+            {
+                "$addFields": {
+                    "name": "$invite.name",
+                    "m_id": "$invite.m_id",
+                    "remark": "$invite.remark",
+                    "time": "$invite.time",
+                    "friend": "$invite.friend",
+                }
+            },
+            {
+                "$lookup": {
+                    "from": "user",
+                    "localField": "m_id",
+                    "foreignField": "id",
+                    "as": "user",
+                }
+            },
+            {
+                "$unwind": {
+                    "path": "$user",
+                }
+            },
+            {"$addFields": {"m_name": "$user.name"}},
+            {"$unset": ["user", "invite", "_id"]},
+            {"$sort": {"time": -1}},
+            {
+                "$addFields": {
+                    "time": {
+                        "$dateToString": {
+                            "format": timeformatString,
+                            "date": "$time",
+                        }
+                    }
+                }
+            },
+            {"$limit": 5},
+        ])
+    )
+    
 
-    return {"avg_score": score, "done_plan": done_plan_list}
+    return {"avg_score": score, "done_plan": done_plan_list,"execute":execute}
