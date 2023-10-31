@@ -8,7 +8,7 @@ import numpy as np
 # 首頁資訊
 def getHome(user_id):
     # 計算三項平均
-    score = list(mongo.db.user.find({"id": f"{user_id}"},{"_id":0,"avg_score":1}))[0]
+    # score = list(mongo.db.user.find({"id": f"{user_id}"},{"_id":0,"sport_info":1}))[0]
 
 
 
@@ -111,4 +111,4 @@ def getHome(user_id):
     print(execute)
     
 
-    return {"avg_score": score["avg_score"], "done_plan": done_plan_list,"execute":execute}
+    return { "done_plan": done_plan_list,"execute":execute}
