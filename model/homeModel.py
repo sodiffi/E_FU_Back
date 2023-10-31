@@ -8,20 +8,9 @@ import numpy as np
 # 首頁資訊
 def getHome(user_id):
     # 計算三項平均
-    sportsList = list(mongo.db.Invite_detail.find({"user_id": user_id}))
+    score = list(mongo.db.user.find({"id": f"{user_id}"},{"_id":0,"avg_score":1}))[0]
 
-    score = [0, 0, 0]
-    count = [0, 0, 0]
-    for i in sportsList:
-        for d in i["done"]:
-            print(d)
-            print(type(d))
-            score[d["type_id"]] = score[d["type_id"] - 1] + int(d["level"])
-            count[d["type_id"]] = count[d["type_id"] - 1] + 1
 
-    for i in range(1, len(score)):
-        if count[i] != 0:
-            score[i] = score[i] / count[i]
 
     # 取得當週運動紀錄
     firstDayOfWeek = 1
@@ -122,4 +111,4 @@ def getHome(user_id):
     print(execute)
     
 
-    return {"avg_score": score, "done_plan": done_plan_list,"execute":execute}
+    return {"avg_score": score["avg_score"], "done_plan": done_plan_list,"execute":execute}

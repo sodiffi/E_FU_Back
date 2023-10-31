@@ -3,7 +3,22 @@ from model.util import group
 from model.db import mongo
 
 
-def record(done,score,rawdata,i_id):
+def record(done,each_score,total_score,rawdata,i_id):
+
+    ##更新三項平均
+    # sportsList = list(mongo.db.Invite_detail.find({"user_id": user_id}))
+    # score = [0, 0, 0]
+    # count = [0, 0, 0]
+    # for i in sportsList:
+    #     for d in i["done"]:
+    #         print(d)
+    #         print(type(d))
+    #         score[d["type_id"]] = score[d["type_id"] - 1] + int(d["level"])
+    #         count[d["type_id"]] = count[d["type_id"] - 1] + 1
+
+    # for i in range(1, len(score)):
+    #     if count[i] != 0:
+    #         score[i] = score[i] / count[i]
     return {
         "Invite_detail":mongo.db.Invite_detail.update_many(
             {"i_id": i_id},
@@ -15,9 +30,15 @@ def record(done,score,rawdata,i_id):
                             'default': []
                         }
                     },
-                    'score': {
+                    'each_score': {
                         '$switch': {
-                            'branches': score,
+                            'branches': each_score,
+                            'default': 0
+                        }
+                    },
+                     'total_score': {
+                        '$switch': {
+                            'branches': total_score,
                             'default': 0
                         }
                     }
