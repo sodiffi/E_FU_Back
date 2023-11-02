@@ -73,7 +73,13 @@ def getHistory(h_id):
                     },
                 },
                 {"$unwind": "$m_data"},
-                {"$addFields": {"name": "$m_data.name", "birthday": "$m_data.birth"}},
+                {
+                    "$addFields": {
+                        "name": "$m_data.name",
+                        "birthday": "$m_data.birthday",
+                        "sex": "$m_data.sex",
+                    }
+                },
                 {
                     "$lookup": {
                         "from": "Invite",
