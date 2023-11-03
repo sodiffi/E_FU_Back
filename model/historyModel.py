@@ -16,8 +16,8 @@ def getList(id, friend_id="", i_id=""):
     if i_id != None and i_id != "":
         match["$match"]["i_id"] = int(i_id)
     else:
-        match["$match"]["$expr"] = ({"$gt": [{"$size": "$done"}, 0]},)
-
+        match["$match"]["$expr"] = ({"$gt": [{"$size": "$done"}, 0]})
+    print(match)
     pipline = [
         match,
         {
@@ -50,7 +50,7 @@ def getList(id, friend_id="", i_id=""):
         {"$unwind": "$m_data"},
         {"$addFields": {"m_name": "$m_data.name"}},
         {"$unset": ["_id", "i_data", "m_data", "user_id", "accept"]},
-        {"$match": {"time": {"$lte": datetime.now()}}},
+        # {"$match": {"time": {"$lte": datetime.now()}}},
         {"$sort": {"time": -1}},
     ]
     if friend_id != "":
