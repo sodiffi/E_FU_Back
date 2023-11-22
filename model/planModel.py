@@ -1,13 +1,28 @@
 import json
-from model.util import group
+from model.util import  timeFormat
 from model.db import mongo
 from datetime import datetime, timedelta
-import numpy as np
 
 
-def addPlan(plan):  
+def addPlan(plan):
     ##新增時需判斷是否有重複區間
-    return mongo.db.plan.insert_one(plan)
+    if (len(checkPlan(plan["str_date"], plan["end_date"]))) <= 0:
+        return mongo.db.plan.insert_one(plan)
+    else:
+        return "無法新增"
+
+
+def checkPlan(start, end):
+    return list(
+        mongo.db.plan.find(
+            {
+                "$or": [
+                    {"str_date": {"$lt": datetime.fromisoformat(start)}},
+                    {"end_date": {"$gt": datetime.fromisoformat(end)}},
+                ]
+            }
+        )
+    )
 
 
 def getPlan(user_id):
@@ -15,9 +30,13 @@ def getPlan(user_id):
 
 
 def editPlan(plan, user_id):
-    return mongo.db.plan.update_one(
-        {"id": user_id},
-        {"$set": plan},
-    )
+    if (len(checkPlan(plan["str_date"], plan["end_date"]))) <= 0:
+        return mongo.db.plan.update_one(
+            {"id": user_id},
+            {"$set": plan},
+        )
+    else:
+        return "無法新增"
+
 
 # def delPlan(plan_id)

@@ -2,7 +2,7 @@ import json
 from model.util import group, timeformatString
 from model.db import mongo
 from datetime import datetime, timedelta
-import numpy as np
+
 
 
 # 首頁資訊

@@ -5,7 +5,7 @@ import uuid
 # from coder import MyEncoder
 from flask import app
 from model.db import mongo
-from datetime import datetime
+
 
 from .util import checkParm, ret,quickRet
 
@@ -38,7 +38,7 @@ def add():
     name = content["name"]
     gender = content["gender"]
     birth = content["birth"]
-    # birth = datetime.strptime(content["birth"],'%Y-%m-%d').date()
+    
     height = content["height"]
     weight = content["weight"]
     disease_id = content["disease_id"]
