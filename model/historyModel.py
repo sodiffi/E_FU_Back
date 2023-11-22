@@ -2,7 +2,7 @@ import json
 from model.util import group
 from model.db import mongo
 from datetime import datetime, timedelta
-import numpy as np
+
 
 
 # 歷史運動列表
@@ -50,7 +50,6 @@ def getList(id, friend_id="", i_id=""):
         {"$unwind": "$m_data"},
         {"$addFields": {"m_name": "$m_data.name"}},
         {"$unset": ["_id", "i_data", "m_data", "user_id", "accept"]},
-        # {"$match": {"time": {"$lte": datetime.now()}}},
         {"$sort": {"time": -1}},
     ]
     if friend_id != "":

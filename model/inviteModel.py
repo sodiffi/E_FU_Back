@@ -3,21 +3,39 @@ from model.util import group, timeFormat, timeformatString
 from model.db import mongo
 from datetime import datetime, timedelta
 import bson
-import numpy as np
+
+
+def checkInvite(start):
+    return list(
+        mongo.db.Invite.find(
+            {
+                "$or": [
+                    {"time": {"$lt": datetime.fromisoformat(start)}},
+                    {
+                        "time": {
+                            "$gt": datetime.fromisoformat(start) + timedelta(hours=2)
+                        }
+                    },
+                ]
+            }
+        )
+    )
 
 
 def addinvite(id, name, m_id, friend, time, remark):  # 新增邀約
-    # print(bson.Timestamp(time_obj, 1))
-    return mongo.db.Invite.insert_one(
-        {
-            "id": id,
-            "name": name,
-            "m_id": m_id,
-            "friend": friend,
-            "time": timeFormat(time),
-            "remark": remark,
-        }
-    )
+    if (len(checkInvite(time))) <= 0:
+        return mongo.db.Invite.insert_one(
+            {
+                "id": id,
+                "name": name,
+                "m_id": m_id,
+                "friend": friend,
+                "time": timeFormat(time),
+                "remark": remark,
+            }
+        )
+    else:
+        return "無法新增"
 
 
 def addinvitedetail(data):
@@ -25,17 +43,20 @@ def addinvitedetail(data):
 
 
 def editinvite(id, name, m_id, friend, time, remark):  # 修改邀約
-    return mongo.db.Invite.update_one(
-        {"id": id, "m_id": m_id},
-        {
-            "$set": {
-                "name": name,
-                "friend": friend,
-                "time": timeFormat(time),
-                "remark": remark,
-            }
-        },
-    )
+    if (len(checkInvite(time))) <= 0:
+        return mongo.db.Invite.update_one(
+            {"id": id, "m_id": m_id},
+            {
+                "$set": {
+                    "name": name,
+                    "friend": friend,
+                    "time": timeFormat(time),
+                    "remark": remark,
+                }
+            },
+        )
+    else:
+        return "無法新增"
 
 
 def getinviteDetail(i_id):  # 邀約詳細資料
@@ -66,12 +87,7 @@ def getinviteDetail(i_id):  # 邀約詳細資料
 
 def invitelist(user_id, accept):
     # 0全部; 1接受; 2不接受; 3未回應;
-    modePipline = {
-        "user_id": user_id,
-        "$expr":{
-            "$lte":[{"$size": "$done"}, 0]
-        }
-    }
+    modePipline = {"user_id": user_id, "$expr": {"$lte": [{"$size": "$done"}, 0]}}
     if accept != 0:
         modePipline["accept"] = accept
     return list(
