@@ -34,7 +34,13 @@ def add_record():
         result['mes']=check
     return ret(result)
 
-
+@recordAPI.route("/update/<user_id>", methods=["GET"])
+def update_record(user_id):
+    try:
+        recordModel.avg_score(user_id)
+        return "更新成功"
+    except:
+        return "更新失敗"
 
 
     # token_type, access_token = request.headers.get('Authorization').split(' ')
