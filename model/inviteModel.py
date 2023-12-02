@@ -5,17 +5,14 @@ from datetime import datetime, timedelta
 import bson
 
 
-def checkInvite(start):
+def checkInvite(start: datetime, id: int):
     return list(
         mongo.db.Invite.find(
             {
-                "$or": [
-                    {"time": {"$lt": datetime.fromisoformat(start)}},
-                    {
-                        "time": {
-                            "$gt": datetime.fromisoformat(start) + timedelta(hours=2)
-                        }
-                    },
+                "$and": [
+                    {"$nor": [{"id": id}]},
+                    {"time": {"$gte": start}},
+                    {"time": {"$lte": start + timedelta(hours=2)}},
                 ]
             }
         )
@@ -23,7 +20,7 @@ def checkInvite(start):
 
 
 def addinvite(id, name, m_id, friend, time, remark):  # 新增邀約
-    if (len(checkInvite(time))) <= 0:
+    if (len(checkInvite(timeFormat(time), id))) <= 0:
         return mongo.db.Invite.insert_one(
             {
                 "id": id,
@@ -43,9 +40,10 @@ def addinvitedetail(data):
 
 
 def editinvite(id, name, m_id, friend, time, remark):  # 修改邀約
-    if (len(checkInvite(time))) <= 0:
+    if (len(checkInvite(timeFormat(time), id))) <= 0:
+        print(id, m_id, list(mongo.db.Invite.find({"id": int(id), "m_id": m_id})))
         return mongo.db.Invite.update_one(
-            {"id": id, "m_id": m_id},
+            {"id": int(id), "m_id": m_id},
             {
                 "$set": {
                     "name": name,
@@ -154,7 +152,36 @@ def replyinvite(m_id, i_id, accept):
     )
 
 
-def searchInvite(m_id, time):
-    return list(
-        mongo.db.Invite.find({"m_id": m_id, "time": timeFormat(time)}, {"_id": 0})
+def searchInvite(m_id, time, id: int):
+    searchOption = {
+        "m_id": m_id,
+    }
+    if time != "None":
+        searchOption["time"] = timeFormat(time)
+    if id != None:
+        searchOption["id"] = int(id)
+    print(searchOption)
+
+    data=list(
+        mongo.db.Invite.aggregate(
+            [
+                {"$match": searchOption},
+                {
+                    "$lookup": {
+                        "from": "user",
+                        "localField": "m_id",
+                        "foreignField": "id",
+                        "as": "user",
+                    }
+                },
+                {
+                    "$unwind": {
+                        "path": "$user",
+                    }
+                },
+                {"$addFields": {"m_name": "$user.name"}},
+                {"$unset":{}}
+            ]
+        )
     )
+    return data
