@@ -45,3 +45,23 @@ def getHistory(h_id):
         result["mes"] = "資料傳輸發生錯誤"
         result["code"] = 0
         return ret(result)
+    
+@historyAPI.route("detail/<h_id>/<user_id>")
+def getCommand(h_id,user_id):
+    result = {"success": False}
+    try:
+        data = historyModel.getCommend(user_id,h_id)
+        
+        result["data"] = {"commend":data}
+        result["mes"] = "查詢成功"
+        result["code"] = 200
+        result["success"] = True
+        return ret(result)
+    except Exception as err:
+        print(f"Unexpected {err}, {type(err)}")
+
+        result["mes"] = "資料傳輸發生錯誤"
+        result["code"] = 0
+        return ret(result)
+    
+
