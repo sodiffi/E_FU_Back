@@ -16,7 +16,7 @@ def getList(id, friend_id="", i_id=""):
         match["$match"]["i_id"] = int(i_id)
     else:
         match["$match"]["$expr"] = {"$gt": [{"$size": "$done"}, 0]}
-    print(match)
+    
     pipline = [
         match,
         {
@@ -57,7 +57,7 @@ def getList(id, friend_id="", i_id=""):
 
 
 def getHistory(h_id):
-    print(h_id)
+    
     return list(
         mongo.db.Invite_detail.aggregate(
             [

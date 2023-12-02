@@ -52,7 +52,7 @@ def getCommand(h_id,user_id):
     try:
         data = historyModel.getCommend(user_id,h_id)
         
-        result["data"] = data
+        result["data"] = {"commend":data}
         result["mes"] = "查詢成功"
         result["code"] = 200
         result["success"] = True
