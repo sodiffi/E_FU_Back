@@ -22,35 +22,41 @@ def addinvite(m_id):
             time = check["time"]
             remark = check["remark"]
             id = get_next_id("Invite")
-            inviteModel.addinvite(id, name, m_id, friend, time, remark)
-            friend = []
-            for i in check["friend"]:
-                friend.append(i)
-            if friend != []:
-                try:
-                    
-                    insert_data = []
-                    for i in range(0, len(friend)):
-                        insert_data.append(
-                            {
-                                "i_id": id,
-                                "user_id": friend[i],
-                                "accept": 3 if friend[i] != m_id else 1,
-                                "done": [],
-                            }
-                        )
-                        # {"sets_no": 0, "item_id": 0, "times": 0, "level": 0}
-                    inviteModel.addinvitedetail(insert_data)
-                    result["mes"] = "新增邀約成功"
+            data = inviteModel.addinvite(id, name, m_id, friend, time, remark)
+            print(data)
+            if data == "0" :
+                result["mes"] = "新增邀約失敗，附近時段已有其他運動邀約"
+                result["success"] = False
+                return ret(result)
+            else:
+                friend = []
+                for i in check["friend"]:
+                    friend.append(i)
+                if friend != []:
+                    try:
+                        
+                        insert_data = []
+                        for i in range(0, len(friend)):
+                            insert_data.append(
+                                {
+                                    "i_id": id,
+                                    "user_id": friend[i],
+                                    "accept": 3 if friend[i] != m_id else 1,
+                                    "done": [],
+                                }
+                            )
+                            # {"sets_no": 0, "item_id": 0, "times": 0, "level": 0}
+                        inviteModel.addinvitedetail(insert_data)
+                        result["mes"] = "新增邀約成功"
+                        result["success"] = True
+                        return ret(result)
+                    except:
+                        result["mes"] = "好友邀約失敗"
+                        return ret(result)
+                else:
+                    result["mes"] = "新增邀約成功，您暫無邀請任何好友"
                     result["success"] = True
                     return ret(result)
-                except:
-                    result["mes"] = "好友邀約失敗"
-                    return ret(result)
-            else:
-                result["mes"] = "新增邀約成功，您暫無邀請任何好友"
-                result["success"] = True
-                return ret(result)
     else:
         result["mes"] = "新增邀約異常"
         return ret(result)
@@ -110,12 +116,16 @@ def replyinvite(m_id, id):
         if type(check) == dict:
             try:
                 accept = check["accept"]
-                inviteModel.replyinvite(m_id, int(id), accept)
-                if accept==1:
-                    result["mes"] = "已接受邀約"
-                elif accept==2:
-                    result["mes"] = "已拒絕邀約"
-                result["success"] = True
+                data = inviteModel.replyinvite(m_id, int(id), accept)
+                if data == "0" :
+                    result["mes"] = "該時段已有其他運動"
+                    result["success"] = False
+                else:    
+                    if accept==1:
+                        result["mes"] = "已接受邀約"
+                    elif accept==2:
+                        result["mes"] = "已拒絕邀約"
+                    result["success"] = True
                 return ret(result)
             except:
                 return ret(result)
