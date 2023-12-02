@@ -16,16 +16,17 @@ def add_record():
         total_score=[]
         for i in check["detail"]:
             check2=checkParm(["user_id","i_id",'done','each_score','total_score'],i)
-            print(check2)
+            # print(check2)
             if isinstance(check2, dict):
                 i_id = check2["i_id"]
+                user_id = check2["user_id"]
                 done.append( {'case': {'$eq': ['$user_id', check2["user_id"]]}, 'then': check2["done"]})
                 each_score.append( {'case': {'$eq': ['$user_id', check2["user_id"]]}, 'then': check2["each_score"]})
                 total_score.append( {'case': {'$eq': ['$user_id', check2["user_id"]]}, 'then': check2["total_score"]})
         
         # print(done,score)
         try:
-            recordModel.record(done,each_score,total_score,check["record"],i_id)
+            recordModel.record(done,each_score,total_score,check["record"],i_id,user_id)
             result["mes"]="新增成功"
             result["success"]=True
         except:
