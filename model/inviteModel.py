@@ -11,8 +11,7 @@ def checkInvite(start: datetime, id: int):
             {
                 "$and": [
                     {"$nor": [{"id": id}]},
-                    {"time": {"$gte": start}},
-                    {"time": {"$lte": start + timedelta(hours=2)}},
+                    {"time": {"$gte": start,"$lte": start + timedelta(hours=2)}},
                 ]
             }
         )
@@ -32,7 +31,7 @@ def addinvite(id, name, m_id, friend, time, remark):  # 新增邀約
             }
         )
     else:
-        return "無法新增"
+        return "0"
 
 
 def addinvitedetail(data):
@@ -142,14 +141,18 @@ def invitelist(user_id, accept):
 
 
 def replyinvite(m_id, i_id, accept):
-    return mongo.db.Invite_detail.update_one(
-        {"i_id": i_id, "user_id": m_id},
-        {
-            "$set": {
-                "accept": accept,
-            }
-        },
-    )
+    time  = list(mongo.db.Invite.find({"id":i_id}))[0]["time"]
+    if (len(checkInvite(time, i_id))) <= 0:
+        return mongo.db.Invite_detail.update_one(
+            {"i_id": i_id, "user_id": m_id},
+            {
+                "$set": {
+                    "accept": accept,
+                }
+            },
+        )
+    else:
+        return "0"
 
 
 def searchInvite(m_id, time, id: int):
