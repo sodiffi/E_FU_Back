@@ -54,6 +54,15 @@ def edit_plan(user_id):
         result['mes']=check
     return ret(result)
 
-
-
-   
+@planAPI.route("/barchart/<user_id>", methods=["GET"])
+def bar_chart(user_id):
+    result = {"success": False, "mes": "查詢失敗"}
+    try:
+        data=planModel.barChart(user_id)
+        result["mes"]='查詢成功'
+        result["success"]=True
+        result['data']=data
+        return ret(result)
+    except:
+        result["mes"]="查詢失敗"
+        return ret(result)
