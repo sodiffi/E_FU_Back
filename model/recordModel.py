@@ -4,21 +4,7 @@ from model.db import mongo
 
 
 def record(done,each_score,total_score,rawdata,i_id,user_id):
-    sportsList = list(mongo.db.Invite_detail.find({"user_id": user_id}))
-    score = [0, 0, 0]
-    count = [0, 0, 0]
-    for i in sportsList:
-        for d in i["done"]:
-            # print(d)
-            # print(type(d))
-            score[d["type_id"]] = score[d["type_id"]] + int(d["level"])
-            count[d["type_id"]] = count[d["type_id"]] + 1
-    for i in range(0, len(score)):
-        if count[i] != 0:
-            score[i] = score[i] / count[i]
-    avg = sum(score) / len(score)
-    return {
-        "Invite_detail":mongo.db.Invite_detail.update_many(
+    mongo.db.Invite_detail.update_many(
             {"i_id": i_id},
             [
                 {'$set': {
@@ -42,8 +28,22 @@ def record(done,each_score,total_score,rawdata,i_id,user_id):
                     }
                 }}
             ]
-        ),
-        "raw": mongo.db.record.insert_many(rawdata),
+        )
+    mongo.db.record.insert_many(rawdata)
+    sportsList = list(mongo.db.Invite_detail.find({"user_id": user_id}))
+    score = [0, 0, 0]
+    count = [0, 0, 0]
+    for i in sportsList:
+        for d in i["done"]:
+            # print(d)
+            # print(type(d))
+            score[d["type_id"]] = score[d["type_id"]] + int(d["level"])
+            count[d["type_id"]] = count[d["type_id"]] + 1
+    for i in range(0, len(score)):
+        if count[i] != 0:
+            score[i] = score[i] / count[i]
+    avg = sum(score) / len(score)
+    return {
         "score": mongo.db.user.update_one(
             {"id": user_id},
             {
