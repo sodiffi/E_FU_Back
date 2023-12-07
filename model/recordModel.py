@@ -1,7 +1,7 @@
 import json
 from model.util import group
 from model.db import mongo
-
+from decimal import Decimal, ROUND_HALF_UP
 
 def record(done,each_score,total_score,rawdata,i_id,user_id):
     mongo.db.Invite_detail.update_many(
@@ -35,14 +35,13 @@ def record(done,each_score,total_score,rawdata,i_id,user_id):
     count = [0, 0, 0]
     for i in sportsList:
         for d in i["done"]:
-            # print(d)
-            # print(type(d))
             score[d["type_id"]] = score[d["type_id"]] + int(d["level"])
             count[d["type_id"]] = count[d["type_id"]] + 1
     for i in range(0, len(score)):
         if count[i] != 0:
             score[i] = score[i] / count[i]
-    avg = sum(score) / len(score)
+    avg = Decimal(sum(score) / len(score))
+    avg = float(avg.quantize(Decimal('0.1'), rounding=ROUND_HALF_UP))
     return {
         "score": mongo.db.user.update_one(
             {"id": user_id},
@@ -69,14 +68,13 @@ def avg_score(user_id):
     count = [0, 0, 0]
     for i in sportsList:
         for d in i["done"]:
-            # print(d)
-            # print(type(d))
             score[d["type_id"]] = score[d["type_id"]] + int(d["level"])
             count[d["type_id"]] = count[d["type_id"]] + 1
     for i in range(0, len(score)):
         if count[i] != 0:
             score[i] = score[i] / count[i]
-    avg = sum(score) / len(score)
+    avg = Decimal(sum(score) / len(score))
+    avg = float(avg.quantize(Decimal('0.1'), rounding=ROUND_HALF_UP))
     return mongo.db.user.update_one(
         {"id": user_id},
         {
@@ -93,27 +91,3 @@ def avg_score(user_id):
             {"element3.type_id": 2}
         ]
     )
-
-
-        # "Invite_detail":mongo.db.Invite_detail.update_one(
-        #     {
-        #         'user_id': detail["user_id"],
-        #         'i_id': detail["i_id"]
-        #     },
-        #     {
-        #         '$set': {
-        #             'done': detail["done"],
-        #             'score': detail["score"]
-        #         }
-        #     }
-        # ),
-
-
-
-# def record(a_id,done,target):
-#     return {
-#         "appointment": mongo.db.appointment.update_one(
-#             {"id": a_id}, {"$set": {"done": done}}
-#         ),
-#         "raw": mongo.db.rehabilion.insert_many(target),
-#     }
