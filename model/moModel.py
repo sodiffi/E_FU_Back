@@ -74,7 +74,7 @@ def rank(user_id):
                     {
                         "$match": {"id": {"$in": friend}},
                     },
-                    {"$sort": {"score": 1}},
+                    {"$sort": {"score": -1,"name":1}},
                     {"$unset": ["_id", "password"]},
                 ]
             )
