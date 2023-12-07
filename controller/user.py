@@ -43,7 +43,6 @@ def edit():
             if(result["mes"] == ""):
                 data = userModel.changePassword(
                     content["account"], content["password"])
-                print(data)
                 result["mes"] = "更換密碼成功"
                 result["success"] = True
                 # result["data"] = data

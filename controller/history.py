@@ -33,7 +33,7 @@ def getHistory(h_id):
     result = {"success": False}
     try:
         data = historyModel.getHistory(h_id)
-        print(data)
+        
         result["data"] = data
         result["mes"] = "查詢成功"
         result["code"] = 200
@@ -52,7 +52,7 @@ def getCommand(h_id,user_id):
     try:
         data = historyModel.getCommend(user_id,h_id)
         
-        result["data"] = {"commend":data}
+        result["data"] = data
         result["mes"] = "查詢成功"
         result["code"] = 200
         result["success"] = True

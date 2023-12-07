@@ -23,7 +23,7 @@ def addinvite(m_id):
             remark = check["remark"]
             id = get_next_id("Invite")
             data = inviteModel.addinvite(id, name, m_id, friend, time, remark)
-            print(data)
+            
             if data == "0" :
                 result["mes"] = "新增邀約失敗，附近時段已有其他運動邀約"
                 result["success"] = False
@@ -67,7 +67,6 @@ def addinvite(m_id):
 def editinvite(m_id, id):
     cond = ["name", "friend", "time", "remark","m_id"]
     check = checkParm(cond, request.json)
-    print(check)
     result = {"success": False, "mes": ""}
     name = check["name"]
     friend = check["friend"]
@@ -77,7 +76,7 @@ def editinvite(m_id, id):
         if type(check) == dict:
             data = inviteModel.editinvite(id, name, m_id, friend, time, remark)
             if not isinstance(data,str):
-                print(data.matched_count)
+                
                 result["mes"] = "編輯成功"
                 result["success"] = True
             return ret(result)
@@ -90,7 +89,7 @@ def editinvite(m_id, id):
 @inviteAPI.route("/list2/<user_id>/<int:mode>", methods=["GET"])
 def inviteList(user_id, mode):
     data = inviteModel.invitelist(user_id, mode)
-    print(data)
+    
     return quickRet(data)
 
 
@@ -137,11 +136,11 @@ def replyinvite(m_id, id):
 @inviteAPI.route("/search/<m_id>/<time>", methods=["GET"])
 def searchInvite(m_id, time):
     args = request.args
-    print(args.get("id"))
+    
     result = {"success": False, "mes": ""}
     try:
         data = inviteModel.searchInvite(m_id, time,id=args.get("id"))
-        print(data)
+        
         return quickRet(data)
     except Exception as e:
         print("except",e)
