@@ -110,18 +110,38 @@ def getCommend(user_id, id=-1):
     }
     if id != -1:
         pipline["$match"]["i_id"] = {"$lte": int(id)}
-    
+    res={}
     data = list(
         mongo.db.Invite_detail.aggregate(
             [
                 pipline,
                 {"$sort": {"i_id": -1}},
                 {"$unset": ["_id"]},
+                 {
+                    "$lookup": {
+                        "from": "user",
+                        "localField": "user_id",
+                        "foreignField": "id",
+                        "as": "m_data",
+                    },
+                },
+                {"$unwind": "$m_data"},
+                {
+                    "$addFields": {
+                        "name": "$m_data.name",
+                        "birthday": "$m_data.birthday",
+                        "sex": "$m_data.sex",
+                    }
+                },
+                {"$unset":["m_data"]},
                 {"$limit": 6},
+                
             ]
         )
     )
-    
+
+    res=data[0]
+
     each_score = [0, 0, 0]
     baseline = data[0]["each_score"]
     for d in data[1::]:
@@ -142,4 +162,5 @@ def getCommend(user_id, id=-1):
         else:
             commend = "有進步"
         each_commend.append(commend)
-    return each_commend
+    res['commend']=each_commend
+    return res
