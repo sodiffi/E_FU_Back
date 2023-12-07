@@ -72,6 +72,7 @@ def getinviteDetail(i_id):  # 邀約詳細資料
                     "$addFields": {
                         "userName": "$result.name",
                         "targetSets": "$result.target_sets",
+                        "birthday":"$result.birthday"
                     }
                 },
                 {"$unset": ["result", "_id"]},

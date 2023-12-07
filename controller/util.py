@@ -55,8 +55,6 @@ def ret(result):
 
 
 def quickRet(result):
-    print(result)
-    print(type(result))
     mes = result if result == "error" else " "
     response = make_response(
         json.dumps(

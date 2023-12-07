@@ -10,14 +10,19 @@ def add_plan(user_id):
     cond = ["user_id", "name", "str_date", "end_date","execute"]
     result = {"success": False, "mes": "新增失敗"}
     check = checkParm(cond, request.json)
+    print(check['str_date'],check["end_date"])
+
 
     if isinstance(check, dict):
         try:
-            data=planModel.addPlan(check).acknowledged
-            result["mes"]='新增成功'
-            result["success"]=True
-            result['data']=data
-        except:
+            data=planModel.addPlan(check)
+            if isinstance(data,str): result['mes']="新增重複時段的計畫"
+            elif data.acknowledged:
+                result["mes"]='新增成功'
+                result["success"]=True
+                # result['data']=data
+        except Exception as e:
+            print(e)
             result["mes"]="新增異常"
     else:
         result['mes']=check

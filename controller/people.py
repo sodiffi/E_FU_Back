@@ -14,8 +14,7 @@ peopleProfile = Blueprint("people", __name__, url_prefix="/people")
 @peopleProfile.route("/user_id/<user_id>", methods=["GET"])
 def get(user_id):
     data = peopleModel.getpeople(user_id)
-    print((data))
-    print(type(data))
+    
     result = {"success": False, "data": data}
     return ret(result)
 
@@ -24,17 +23,16 @@ def get(user_id):
 # @peopleProfile.route("/add", methods=["POST"])
 # def add(name,gender,birth,height,weight):
 #     data = {"name":name,"gender":gender,"birth":birth,"height":height,"weight":weight}
-#     print((data))
 #     result = {"success": False, "data": data}
 #     peopleModel.addpeople(data)
 
 @peopleProfile.route("/", methods=["POST"])
 def add():
     content = request.json
-    print(content)
+    
     uid = uuid.uuid4()
     uid=str(uid)
-    print(uid)
+    
     name = content["name"]
     gender = content["gender"]
     birth = content["birth"]
@@ -43,7 +41,7 @@ def add():
     weight = content["weight"]
     disease_id = content["disease_id"]
     data = peopleModel.addpeople(uid,name, gender, birth, height, weight,disease_id)
-    print((data))
+    
     result = {"success": False, "data": data}
     return ret(result)
 
@@ -54,7 +52,6 @@ def add():
 #     print(content)
 #     name = content["name"]
 #     data = peopleModel.findname(name)
-#     print((data))
 #     result = {"success": False, "data": data}
 #     return ret(result)
 
@@ -62,10 +59,8 @@ def add():
 @peopleProfile.route("/edit", methods=["POST"])
 def edit():
     content = request.json
-    print(content)
     uid = content["uid"]
     data = peopleModel.finduid(uid)
-    print((data))
     result = {"success": False, "data": data}
     return ret(result)
 
@@ -73,7 +68,6 @@ def edit():
 @peopleProfile.route("/edit/id", methods=["POST"])
 def editpeople():
     content = request.json
-    print(content)
     result = {"success": False, "mes": ""}
     uid = content["uuid"]
     name = content["name"]
@@ -84,7 +78,6 @@ def editpeople():
     disease_id = content["disease_id"]
     if(result["mes"] == ""):
         data = peopleModel.editpeople(uid,name, gender, birth, height, weight,disease_id)
-        print((data))
         result["mes"] = "編輯成功"
         result["success"] = True
     return ret(result)
@@ -114,7 +107,6 @@ def editpeople():
 @peopleProfile.route("/tfind", methods=["GET"])
 def findt():
     data = peopleModel.findTherapist()
-    print((data))
     result = {"success": False, "data": data}
     return ret(result)
 
@@ -140,7 +132,6 @@ def appointment(t_id):
                 check["done"],
                 check["remark"]
             )
-        print(temp.inserted_id)
         return quickRet("Appointment successful")
     else : 
         return quickRet(check)
