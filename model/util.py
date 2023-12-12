@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 timeformatString = "%Y-%m-%d T%H:%M:%S"
 
 
-def timeFormat(time):
+def timeFormat(time: str):
     return datetime.strptime(time, timeformatString)
 
 
@@ -76,5 +76,3 @@ def process_date_p(data):
         )
         i["tf_time"] = datetime_object
     return data
-
-
