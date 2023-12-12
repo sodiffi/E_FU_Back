@@ -85,3 +85,17 @@ def run_chart(user_id):
     except:
         result["mes"]="查詢失敗"
         return ret(result)
+    
+@planAPI.route("/rateChart/<user_id>", methods=["GET"])
+def rate_chart(user_id):
+    result = {"success": False, "mes": "查詢失敗"}
+    try:
+        data=planModel.sportChart(user_id)
+        result["mes"]='查詢成功'
+        result["success"]=True
+        result['data']=data
+        return ret(result)
+    except Exception as e:
+        print(e)
+        result["mes"]="查詢失敗"
+        return ret(result)
