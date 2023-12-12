@@ -102,3 +102,69 @@ def barChart(user_id):
             ]
         )
     )
+
+
+def runChart(user_id):
+    return list(
+            mongo.db.Invite_detail.aggregate(
+                [
+                    {
+                        '$match': {
+                            'user_id': user_id, 
+                            'accept': 1, 
+                            'total_score': {
+                                '$exists': True
+                            }
+                        }
+                    }, {
+                        '$lookup': {
+                            'from': 'Invite', 
+                            'localField': 'i_id', 
+                            'foreignField': 'id', 
+                            'as': 'result'
+                        }
+                    }, {
+                        '$unwind': '$result'
+                    }, {
+                        '$addFields': {
+                            'time': '$result.time'
+                        }
+                    }, {
+                        '$project': {
+                            'result': 0
+                        }
+                    }, {
+                        '$project': {
+                            'yearMonth': {
+                                '$dateToString': {
+                                    'format': '%Y-%m', 
+                                    'date': {
+                                        '$toDate': '$time'
+                                    }
+                                }
+                            }, 
+                            'total_score': 1, 
+                            '_id': 0, 
+                            'id': 1
+                        }
+                    }, {
+                        '$group': {
+                            '_id': '$yearMonth', 
+                            'count': {
+                                '$sum': 1
+                            }, 
+                            'score': {
+                                '$sum': '$total_score'
+                            }, 
+                            'avg': {
+                                '$avg': '$total_score'
+                            }
+                        }
+                    }, {
+                        '$sort': {
+                            '_id': 1
+                        }
+                    }
+                ]
+            )
+        )
