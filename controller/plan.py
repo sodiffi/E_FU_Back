@@ -71,3 +71,17 @@ def bar_chart(user_id):
     except:
         result["mes"]="查詢失敗"
         return ret(result)
+    
+
+@planAPI.route("/runchart/<user_id>", methods=["GET"])
+def run_chart(user_id):
+    result = {"success": False, "mes": "查詢失敗"}
+    try:
+        data=planModel.runChart(user_id)
+        result["mes"]='查詢成功'
+        result["success"]=True
+        result['data']=data
+        return ret(result)
+    except:
+        result["mes"]="查詢失敗"
+        return ret(result)
