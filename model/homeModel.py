@@ -5,9 +5,12 @@ from datetime import datetime, timedelta
 
 
 def is_same_day(date1, date2):
-    return date1.year == date2.year and \
-           date1.month == date2.month and \
-           date1.day == date2.day
+    return (
+        date1.year == date2.year
+        and date1.month == date2.month
+        and date1.day == date2.day
+    )
+
 
 # 首頁資訊
 def getHome(user_id):
@@ -15,17 +18,25 @@ def getHome(user_id):
     # score = list(mongo.db.user.find({"id": f"{user_id}"},{"_id":0,"sport_info":1}))[0]
 
     # 取得當週運動紀錄
-   
+
     today = datetime.now()
     currentDayOfWeek = today.weekday()
 
-   
     start_of_week = today - timedelta(days=currentDayOfWeek)
     end_of_week = start_of_week + timedelta(days=6)
-    print("start",start_of_week,"end",end_of_week)
+    print("start", start_of_week, "end", end_of_week)
     # 當週運動情形
     sportsday = list(
-        mongo.db.invite_lsit.find({"time": {"$gte": start_of_week, "$lte": end_of_week}})
+        mongo.db.invite_lsit.find(
+            {
+                "time": {
+                    "$gte": start_of_week,
+                    "$lte": end_of_week,
+                  
+                },
+                  "user_id": f"{user_id}",
+            }
+        )
     )
     # print("sportday",sportsday)
 
@@ -53,7 +64,7 @@ def getHome(user_id):
             day = start_of_week + timedelta(days=i)
 
             if weekdays[0]["execute"][i]:
-                if any(e for e in sportsday if is_same_day(day,e['time'])):
+                if any(e for e in sportsday if is_same_day(day, e["time"])):
                     done_plan = 1
                 else:
                     done_plan = 2

@@ -59,7 +59,7 @@ def edit_plan(user_id):
         result['mes']=check
     return ret(result)
 
-@planAPI.route("/barchart/<user_id>", methods=["GET"])
+@planAPI.route("/bar/<user_id>", methods=["GET"])
 def bar_chart(user_id):
     result = {"success": False, "mes": "查詢失敗"}
     try:
@@ -73,29 +73,30 @@ def bar_chart(user_id):
         return ret(result)
     
 
-@planAPI.route("/runchart/<user_id>", methods=["GET"])
+@planAPI.route("/chart/<user_id>", methods=["GET"])
 def run_chart(user_id):
     result = {"success": False, "mes": "查詢失敗"}
     try:
-        data=planModel.runChart(user_id)
+        runChart=planModel.runChart(user_id)
+        sportChart=planModel.sportChart(user_id)
         result["mes"]='查詢成功'
         result["success"]=True
-        result['data']=data
+        result['data']={"runChart":runChart,"sportChart":sportChart}
         return ret(result)
     except:
         result["mes"]="查詢失敗"
         return ret(result)
     
-@planAPI.route("/rateChart/<user_id>", methods=["GET"])
-def rate_chart(user_id):
-    result = {"success": False, "mes": "查詢失敗"}
-    try:
-        data=planModel.sportChart(user_id)
-        result["mes"]='查詢成功'
-        result["success"]=True
-        result['data']=data
-        return ret(result)
-    except Exception as e:
-        print(e)
-        result["mes"]="查詢失敗"
-        return ret(result)
+# @planAPI.route("/rateChart/<user_id>", methods=["GET"])
+# def rate_chart(user_id):
+#     result = {"success": False, "mes": "查詢失敗"}
+#     try:
+#         data=planModel.sportChart(user_id)
+#         result["mes"]='查詢成功'
+#         result["success"]=True
+#         result['data']=data
+#         return ret(result)
+#     except Exception as e:
+#         print(e)
+#         result["mes"]="查詢失敗"
+#         return ret(result)
