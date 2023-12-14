@@ -119,17 +119,20 @@ def sportChart(user_id):
             {"_id": 0},
         )
     )
-    
+
     for plan in plans:
         sportsday = list(
             mongo.db.invite_lsit.find(
-                {"time": {"$gte": plan["str_date"], "$lte": plan["end_date"]}}
+                {
+                    "time": {"$gte": plan["str_date"], "$lte": plan["end_date"]},
+                    "user_id": f"{user_id}",
+                }
             )
         )
 
         weekSport = sum(plan["execute"])
-        str_date=plan['str_date']
-        end_date=plan["end_date"]
+        str_date = plan["str_date"]
+        end_date = plan["end_date"]
         firstWeek = 0
         lastWeek = 0
         firstWeekEnd = datetime.now()
@@ -146,16 +149,16 @@ def sportChart(user_id):
         start_of_week = end_date - timedelta(days=end_date.weekday())
         for i in range(7):
             day = start_of_week + timedelta(days=i)
-            lastWeek += plan["execute"][day.weekday() ]
+            lastWeek += plan["execute"][day.weekday()]
             if is_same_day(day, plan["end_date"]):
                 break
         num_days = (firstWeekEnd - start_of_week).days
         num_weeks = (num_days - 1) / 7
         target = num_weeks * weekSport + firstWeek + lastWeek
         rate.append((len(sportsday) / target))
-    #看個別運動計畫達成率
+    # 看個別運動計畫達成率
     print(rate)
-    return sum(rate)/len(rate)
+    return sum(rate) / len(rate)
 
 
 def runChart(user_id):
