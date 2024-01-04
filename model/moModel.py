@@ -103,9 +103,6 @@ def getUser(card_id):
                 [
                     {'$match': 
                         {'card_id': card_id}
-                        }, 
-                    {'$project': 
-                        {'id': 1, '_id': 0}
                     }
                 ]
             )
