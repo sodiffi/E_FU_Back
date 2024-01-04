@@ -121,3 +121,13 @@ def get_user(card_id):
     except:
         result = {"success":False,"mes":""}
         return ret(result)
+    
+
+@moProfile.route("/radar/<user_id>", methods=["GET"])
+def get_radar(user_id):
+    try:
+        data = moModel.getRadar(user_id)
+        return data
+    except:
+        result = {"success":False,"mes":""}
+        return ret(result)
