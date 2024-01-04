@@ -40,3 +40,4 @@ def update_record(user_id):
         return "更新成功"
     except:
         return "更新失敗"
+    

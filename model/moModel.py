@@ -81,3 +81,32 @@ def rank(user_id):
         )
     else:
         return []
+    
+def getAvg(user_id):
+    return list(
+            mongo.db.user.aggregate(
+                [
+                    {'$match': 
+                        {'id': user_id}
+                        }, 
+                    {'$project': 
+                        {'score': 1, '_id': 0}
+                    }
+                ]
+            )
+        )
+
+    
+def getUser(card_id):
+    return list(
+            mongo.db.user.aggregate(
+                [
+                    {'$match': 
+                        {'card_id': card_id}
+                        }, 
+                    {'$project': 
+                        {'id': 1, '_id': 0}
+                    }
+                ]
+            )
+        )

@@ -104,4 +104,20 @@ def detail(user_id,friend_id):
         print(e)
         return ret(result)
     
-        
+@moProfile.route("/avg/<user_id>", methods=["GET"])
+def get_avg(user_id):
+    try:
+        data = moModel.getAvg(user_id)
+        return data
+    except:
+        result = {"success":False,"mes":""}
+        return ret(result)
+
+@moProfile.route("/getuser/<card_id>", methods=["GET"])
+def get_user(card_id):
+    try:
+        data = moModel.getUser(card_id)
+        return data
+    except:
+        result = {"success":False,"mes":""}
+        return ret(result)
