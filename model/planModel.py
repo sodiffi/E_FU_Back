@@ -21,7 +21,7 @@ def checkPlan(start: datetime, end: datetime, user_id):
     return list(
         mongo.db.plan.find(
             {
-                "user_id": "11136024",
+                "user_id": user_id,
                 "$or": [
                     {
                         "str_date": {"$lte": end},
