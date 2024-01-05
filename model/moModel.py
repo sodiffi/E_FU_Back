@@ -111,3 +111,26 @@ def getUser(card_id):
                 ]
             )
         )
+
+def getRadar(user_id):
+    return list(
+            mongo.db.Invite_detail.aggregate(
+                [
+                    {'$match': {'user_id': user_id}}, 
+                    {
+                        '$lookup': {
+                            'from': 'Invite', 
+                            'localField': 'i_id', 
+                            'foreignField': 'id', 
+                            'as': 'invite'
+                        }
+                    }, 
+                    {'$unwind': {'path': '$invite'}}, 
+                    {'$addFields': {'time': '$invite.time', 'name': '$invite.name'}}, 
+                    {'$unset': 'invite'}, 
+                    {'$sort': {'time': -1}}, 
+                    {'$project': {'_id': 0}}, 
+                    {'$limit': 1}
+                ]
+            )
+        )
