@@ -74,63 +74,55 @@ def rank(user_id):
                     {
                         "$match": {"id": {"$in": friend}},
                     },
-                    {"$sort": {"score": -1,"name":1}},
+                    {"$sort": {"score": -1, "name": 1}},
                     {"$unset": ["_id", "password"]},
                 ]
             )
         )
     else:
         return []
-    
+
+
 def getAvg(user_id):
     return list(
-            mongo.db.user.aggregate(
-                [
-                    {'$match': 
-                        {'id': user_id}
-                        }, 
-                    {'$project': 
-                        {'score': 1, '_id': 0}
-                    }
-                ]
-            )
+        mongo.db.user.aggregate(
+            [{"$match": {"id": user_id}}, {"$project": {"score": 1, "_id": 0}}]
         )
+    )
 
-    
+
 def getUser(card_id):
     return list(
-            mongo.db.user.aggregate(
-                [
-                    {'$match': 
-                        {'card_id': card_id}
-                    },{
-                        "$project":{
-                            "_id":0
-                        }
-                    }
-                ]
-            )
+        mongo.db.user.aggregate(
+            [{"$match": {"card_id": card_id}}, {"$project": {"_id": 0}}]
         )
+    )
+
 
 def getRadar(user_id):
     return list(
-            mongo.db.Invite_detail.aggregate(
-                [
-                    {'$match': {'user_id': user_id}}, 
-                    {
-                        '$lookup': {
-                            'from': 'Invite', 
-                            'localField': 'i_id', 
-                            'foreignField': 'id', 
-                            'as': 'invite'
-                        }
-                    }, 
-                    {'$unwind': {'path': '$invite'}}, 
-                    {'$addFields': {'time': '$invite.time', 'name': '$invite.name'}}, 
-                    {'$unset': 'invite'}, 
-                    {'$sort': {'time': -1}}, 
-                    {'$project': {'_id': 0}}, 
-                    {'$limit': 1}
-                ]
-            )
+        mongo.db.Invite_detail.aggregate(
+            [
+                {
+                    "$match": {
+                        "user_id": user_id,
+                        "$expr": {"$gt": [{"$size": "$done"}, 0]},
+                    }
+                },
+                {
+                    "$lookup": {
+                        "from": "Invite",
+                        "localField": "i_id",
+                        "foreignField": "id",
+                        "as": "invite",
+                    }
+                },
+                {"$unwind": {"path": "$invite"}},
+                {"$addFields": {"time": "$invite.time", "name": "$invite.name"}},
+                {"$unset": "invite"},
+                {"$sort": {"time": -1}},
+                {"$project": {"_id": 0}},
+                {"$limit": 1},
+            ]
         )
+    )
