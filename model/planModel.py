@@ -93,15 +93,26 @@ def barChart(user_id):
                     }
                 },
                 {
-                    "$project": {
+                    "$addFields": {
+                        "YwithM": {
+                            "$concat": [
+                                {"$toString": {"$year": {"$toDate": "$time"}}},
+                                "-",
+                                {"$toString": {"$month": {"$toDate": "$time"}}},
+                            ]
+                        },
                         "month": {"$month": {"$toDate": "$time"}},
-                        "_id": 0,
-                        "id": 1,
                     }
                 },
-                {"$group": {"_id": "$month", "count": {"$sum": 1}}},
-                {"$addFields": {"month": "$_id"}},
-                {"$project": {"_id": 0}},
+                {"$group": {"_id": ["$month", "$YwithM"], "count": {"$sum": 1}}},
+                {
+                    "$addFields": {
+                        "month": {"$first": "$_id"},
+                        "YwithM": {"$last": "$_id"},
+                    }
+                },
+                {"$unset": ["_id"]},
+                {"$sort":{"YwithM":1}}
             ]
         )
     )
