@@ -16,10 +16,7 @@ from linebot.models import MessageEvent, TextMessage
 
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "ABCDEFhijklm"
-app.config[
-    "MONGO_URI"
-] = "mongodb+srv://numbone112:i3PO8xrZj1KRwz83@cluster0.5rqnhen.mongodb.net/mcubed"
+app.config.from_pyfile("configs.py")
 mongo.init_app(app)  # initialize here!
 print(type(mongo))
 print((mongo.db.name))
